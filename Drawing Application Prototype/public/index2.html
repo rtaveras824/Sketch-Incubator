@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Really Cool Drawing App</title>
+	<link rel="stylesheet" href="/master.css"/>
+</head>	
+
+<body style="margin: 0">
+	<div id="toolbar">
+		<div id="rad">
+			Radius <span id="radval">10</span>
+			<div id="decrad" class="radcontrol">-</div>
+			<div id="incrad" class="radcontrol">+</div>
+		</div>
+		<div id="stuff">
+			<button id="replay_btn">Replay</button>
+			<button id="erase_btn">Erase</button>
+			<button id="pencil_btn">Pencil</button>
+		</div>
+		<div id="recordings">
+			<form id="send_record" action="/add" method="POST">
+				<input type="text" name="title">
+				<input id="drawing_input" type="hidden" name="drawing">
+				<button>Submit</button>
+			</form>
+			<button id="record_btn">Record</button>
+		</div>
+		<div id="colors">
+		</div>
+		<div id="save">
+			Save
+		</div>
+	</div>
+
+<!-- Use display block on canvas to get rid of line height because it is inline -->
+	<canvas id="canvas" style="display: block">
+		Sorry, no canvas for you.
+	</canvas>
+
+	<script src="pdollar.js"></script>
+	<script src="main.js"></script>
+	<script src="radius.js"></script>
+	<script src="colors.js"></script>
+	<script src="save.js"></script>
+</body>
+
+</html>

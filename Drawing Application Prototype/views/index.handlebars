@@ -1,0 +1,72 @@
+<body style="margin: 0">
+	<div id="toolbar">
+		<div id="rad">
+			Radius <span id="radval">10</span>
+			<div id="decrad" class="radcontrol">-</div>
+			<div id="incrad" class="radcontrol">+</div>
+		</div>
+		<div id="stuff">
+			<button id="replay_btn">Replay</button>
+			<button id="step_btn">Step By Step</button>
+			<button id="erase_btn">Erase</button>
+			<button id="pencil_btn">Pencil</button>
+		</div>
+		<div id="recordings">
+			<div id="drawings"></div>
+			<form id="send_record" action="/add" method="POST">
+				<input type="text" name="title">
+				<input id="drawing_input" type="hidden" name="drawing">
+				<button>Submit</button>
+			</form>
+			<button id="record_btn">Record</button>
+		</div>
+		<div id="colors">
+		</div>
+		<div id="save">
+			Save
+		</div>
+	</div>
+
+<!-- Use display block on canvas to get rid of line height because it is inline -->
+	<canvas id="canvas" style="display: block">
+		Sorry, no canvas for you.
+	</canvas>
+	<canvas id="canvas2" style="display: none">
+		Hidden
+	</canvas>
+
+	<script type="text/javascript">
+		var test = {};
+
+		var drawingsDiv = document.getElementById('drawings');
+		{{#each drawings}}
+			var btn = document.createElement('button');
+			btn.id = "{{ _id }}";
+			btn.className = 'drawing_from_db';
+			btn.dataset.drawing = '{{{drawing}}}';
+			btn.innerHTML = "{{ title }}";
+			drawingsDiv.appendChild(btn);
+			console.log("{{_id}}");
+		{{/each}}
+
+		/* <button id="{{ _id }}" data-drawing="{{ drawing }}" drawingclass="drawing_from_db">{{ title }}</button> */
+		var drawingFromDB = document.getElementsByClassName('drawing_from_db');
+
+		function setReplayDrawing(e) {
+			var drawingClass = e.target.className;
+
+			if (drawingClass === 'drawing_from_db') {
+				var id = e.target.id;
+				console.log(JSON.parse(e.target.dataset.drawing));
+				test = JSON.parse(e.target.dataset.drawing);
+			}
+		}
+
+		document.querySelector('body').addEventListener('click', setReplayDrawing);
+	</script>
+	<script src="pdollar.js"></script>
+	<script src="main.js"></script>
+	<script src="radius.js"></script>
+	<script src="colors.js"></script>
+	<script src="save.js"></script>
+</body>
