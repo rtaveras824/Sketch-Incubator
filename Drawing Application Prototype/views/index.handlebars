@@ -8,6 +8,8 @@
 		<div id="stuff">
 			<button id="replay_btn">Replay</button>
 			<button id="step_btn">Step By Step</button>
+			<button id="undo_btn">Undo</button>
+			<button id="redo_btn">Redo</button>
 			<button id="erase_btn">Erase</button>
 			<button id="pencil_btn">Pencil</button>
 		</div>
@@ -28,10 +30,10 @@
 	</div>
 
 <!-- Use display block on canvas to get rid of line height because it is inline -->
-	<canvas id="canvas" style="display: block">
+	<canvas id="canvas" style="display: block; float: left;">
 		Sorry, no canvas for you.
 	</canvas>
-	<canvas id="canvas2" style="display: none">
+	<canvas id="canvas2" style="float: right;">
 		Hidden
 	</canvas>
 
@@ -69,4 +71,5 @@
 	<script src="radius.js"></script>
 	<script src="colors.js"></script>
 	<script src="save.js"></script>
+	<script src="pointers.js"></script>
 </body>

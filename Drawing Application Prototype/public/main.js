@@ -4,13 +4,17 @@ var context = canvas.getContext('2d');
 var canvas2 = document.getElementById('canvas2');
 var context2 = canvas2.getContext('2d');
 
-var currentContext;
+var currentContext = context;
 
+var pressure = 1;
 var radius = 1;
 // var dragging = false;
 
-canvas.width = window.innerWidth;
+canvas.width = (window.innerWidth / 2);
 canvas.height = window.innerHeight;
+
+canvas2.width = canvas.width;
+canvas2.height = canvas.height;
 
 var halfSizeWidth = window.innerWidth / 2;
 var height = window.innerHeight;
@@ -29,6 +33,7 @@ var _isDown = false;
 
 var points = [];
 var strokes = [];
+var redoStrokes = [];
 var type = '';
 var recording = false;
 var steppin = false;
@@ -38,9 +43,10 @@ var prevStepY;
 
 type = 'pencil';
 
-function IndividualPoint(x, y, id) {
+function IndividualPoint(x, y, pressure, id) {
 	this.X = x;
 	this.Y = y;
+	this.Pressure = pressure;
 	this.ID = id;
 }
 
@@ -63,16 +69,28 @@ function Drawing(strokes, canvasWidth, canvasHeight) {
 	}
 }
 
-var redraw = function(stroke, canvasWidth, canvasHeight) {
-	var super_points = stroke.points;
+var redraw = function(strokes, length, canvasWidth, canvasHeight, intervalTime) {
+	var super_points = strokes[j].points;
 	var ratio = .5;
+	var time;
+	
+	if (typeof intervalTime === 'undefined') {
+		time = 5;
+	} else {
+		time = intervalTime;
+	}
+	console.log('interval time', time);
 
 	var strokeDraw = window.setInterval(function() {
-		if (stroke.type === 'pencil') {
+		if (strokes[j].type === 'pencil') {
 			pencil(context);
-			context.fillStyle = 'red';
-			context.strokeStyle = 'red';
-		} else if (stroke.type === 'eraser') {
+			// context.fillStyle = 'red';
+			// context.strokeStyle = 'red';
+			radius = 10 * super_points[i].Pressure;
+			context.lineWidth = radius * 2;
+			context.fillStyle = ("rgba(0,0,0," + super_points[i].Pressure + ")");
+			context.strokeStyle = ("rgba(0,0,0," + super_points[i].Pressure + ")");
+		} else if (strokes[j].type === 'eraser') {
 			erase(context);
 		}
 
@@ -103,13 +121,13 @@ var redraw = function(stroke, canvasWidth, canvasHeight) {
 			i = 0;
 			j++;
 			if (!steppin) {
-				if (j < test.strokes.length) {
+				if (j < length) {
 					console.log(j);
-					redraw(test.strokes[j]);
+					redraw(strokes, length);
 				}
 			}
 		}
-	}, 5);
+	}, time);
 }
 
 var replayBtn = document.getElementById('replay_btn');
@@ -120,7 +138,7 @@ replayBtn.addEventListener('click', function(e) {
 	j = 0;
 	steppin = false;
 
-	redraw(test.strokes[i], test.canvasWidth, test.canvasHeight);
+	redraw(test.strokes, test.strokes.length, test.canvasWidth, test.canvasHeight);
 });
 
 function erase(context) {
@@ -180,7 +198,7 @@ function stepByStep() {
 	// canvas.width = halfSizeWidth;
 	// canvas.style.float = 'left';
 
-	redraw(test.strokes[i], test.canvasWidth, test.canvasHeight);
+	redraw(test.strokes, test.strokes.length, test.canvasWidth, test.canvasHeight);
 }
 
 var stepBtn = document.getElementById('step_btn');
@@ -191,6 +209,110 @@ function reset() {
 	points = [];
 	strokes = [];
 }
+
+function undo() {
+	var lastStroke = strokes.pop();
+	redoStrokes.push(lastStroke);
+
+	context.clearRect(0, 0, canvas.width, canvas.height);
+	// i = 0;
+	// j = 0;
+	steppin = false;
+
+	// redraw(strokes, strokes.length, canvas.width, canvas.height, 0);
+	for (var i = 0; i < strokes.length; i++) {
+		for (var j = 0; j < strokes[i].points.length; j++) {
+			if (strokes[i].points[j].Pressure !== 0.5) {
+				pressure = strokes[i].points[j].Pressure;
+			} else {
+				pressure = 1;
+			}
+
+
+			if (strokes[i].type === 'pencil') {
+				pencil(context);
+				// context.fillStyle = 'red';
+				// context.strokeStyle = 'red';
+				radius = 10 * pressure;
+				context.lineWidth = radius * 2;
+				context.fillStyle = ("rgba(0,0,0," + pressure + ")");
+				context.strokeStyle = ("rgba(0,0,0," + pressure + ")");
+			} else if (strokes[i].type === 'eraser') {
+				erase(context);
+			}
+
+			var x = strokes[i].points[j].X;
+			var y = strokes[i].points[j].Y;
+
+			console.log('stroke', i, 'point', j);
+			context.lineTo(x, y);
+			context.stroke();
+			context.beginPath();
+			context.arc(x, y, radius, 0, Math.PI*2);
+			// Firefox does not support offsetX or offsetY, so use client instead
+			// context.arc(e.offsetX, e.offsetY, radius, 0, Math.PI*2);
+			// context.arc(x, y, radius, startAngle, endAngle); // Angle in radians
+			context.fill();
+			context.beginPath();
+			context.moveTo(x, y);
+		}
+	}
+}
+
+var undoBtn = document.getElementById('undo_btn');
+undoBtn.addEventListener('click', undo);
+
+function redo() {
+	var firstRedoStroke = redoStrokes.pop();
+	strokes.push(firstRedoStroke);
+
+	context.clearRect(0, 0, canvas.width, canvas.height);
+	// i = 0;
+	// j = 0;
+	steppin = false;
+
+	// redraw(strokes, strokes.length, canvas.width, canvas.height, 0);
+	for (var i = 0; i < strokes.length; i++) {
+		for (var j = 0; j < strokes[i].points.length; j++) {
+			if (strokes[i].points[j].Pressure !== 0.5) {
+				pressure = strokes[i].points[j].Pressure;
+			} else {
+				pressure = 1;
+			}
+
+
+			if (strokes[i].type === 'pencil') {
+				pencil(context);
+				// context.fillStyle = 'red';
+				// context.strokeStyle = 'red';
+				radius = 10 * pressure;
+				context.lineWidth = radius * 2;
+				context.fillStyle = ("rgba(0,0,0," + pressure + ")");
+				context.strokeStyle = ("rgba(0,0,0," + pressure + ")");
+			} else if (strokes[i].type === 'eraser') {
+				erase(context);
+			}
+
+			var x = strokes[i].points[j].X;
+			var y = strokes[i].points[j].Y;
+
+			console.log('stroke', i, 'point', j);
+			context.lineTo(x, y);
+			context.stroke();
+			context.beginPath();
+			context.arc(x, y, radius, 0, Math.PI*2);
+			// Firefox does not support offsetX or offsetY, so use client instead
+			// context.arc(e.offsetX, e.offsetY, radius, 0, Math.PI*2);
+			// context.arc(x, y, radius, startAngle, endAngle); // Angle in radians
+			context.fill();
+			context.beginPath();
+			context.moveTo(x, y);
+		}
+	}
+}
+
+var redoBtn = document.getElementById('redo_btn');
+redoBtn.addEventListener('click', redo);
 /* END MY CODE */
 
 var putPoint = function(e, context) {
@@ -223,6 +345,8 @@ function mouseDownEvent(e, context) {
 	currentContext = context;
 	console.log(currentContext);
 
+	redoStrokes = [];
+
 	var x = e.clientX;
 	var y = e.clientY;
 	if (e.button <= 1) {
@@ -232,9 +356,9 @@ function mouseDownEvent(e, context) {
 		}
 		_points[_points.length] = new Point(x, y, ++_strokeID);
 
-		if (recording) {
-			points.push(new IndividualPoint(x, y, ++_strokeID));
-		}
+		//if (recording) {
+			points.push(new IndividualPoint(x, y, pressure, ++_strokeID));
+		//}
 		
 		putPoint(e, currentContext);
 	}
@@ -246,9 +370,9 @@ function mouseDragEvent(e, context) {
 	if (_isDown) {
 		_points[_points.length] = new Point(x, y, _strokeID);
 
-		if (recording) {
-			points.push(new IndividualPoint(x, y, _strokeID));
-		}
+		// if (recording) {
+			points.push(new IndividualPoint(x, y, pressure, _strokeID));
+		// }
 		
 		putPoint(e, currentContext);
 	}
@@ -257,12 +381,13 @@ function mouseDragEvent(e, context) {
 function mouseUpEvent(e, context) {
 	if (e.button <= 1) {
 		if (_isDown) {
-			if (recording) {
-				strokes.push(new Stroke(points, type));
-				points = [];
-			} else if (steppin) {
+			//if (recording) {
+			strokes.push(new Stroke(points, type));
+			points = [];
+			//}
+			if (steppin) {
 				if (j < test.strokes.length)
-					redraw(test.strokes[j], test.canvasWidth, test.canvasHeight);
+					redraw(test.strokes, test.strokes.length, test.canvasWidth, test.canvasHeight);
 					_r.PointClouds[_r.PointClouds.length - 1] = new PointCloud('title2', test.strokes[j].points);
 			}
 			
@@ -296,6 +421,31 @@ canvas.addEventListener('mouseup', function(e) {
 });
 canvas.addEventListener('mousemove', function(e) {
 	mouseDragEvent(e, context)
+});
+
+canvas.addEventListener('pointermove', function(e) {
+	pressure = e.pressure;
+	radius = 10 * e.pressure;
+	context.lineWidth = radius * 2;
+	context.fillStyle = ("rgba(0,0,0," + e.pressure + ")");
+	context.strokeStyle = ("rgba(0,0,0," + e.pressure*2 + ")");
+});
+
+window.addEventListener('keydown', function(e) {
+	var keyPressed = e.which || e.keyCode;
+	console.log(keyPressed);
+	switch (keyPressed) {
+		case 90:
+			console.log('undo');
+			undo();
+			break;
+		case 88:
+			console.log('redo');
+			redo();
+			break;
+		default:
+			console.log('default');
+	}
 });
 
 canvas2.addEventListener('mousedown', function(e) {

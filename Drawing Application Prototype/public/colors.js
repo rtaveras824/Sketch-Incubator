@@ -9,8 +9,8 @@ for (var i = 0, n = colors.length; i < n; i++) {
 }
 
 function setColor(color) {
-	context.fillStyle = color;
-	context.strokeStyle = color;
+	currentContext.fillStyle = color;
+	currentContext.strokeStyle = color;
 	var active = document.getElementsByClassName('active')[0];
 	if (active) {
 		active.className = 'swatch';

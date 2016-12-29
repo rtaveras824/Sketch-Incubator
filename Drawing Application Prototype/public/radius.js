@@ -5,7 +5,7 @@ var setRadius = function(newRadius) {
 		newRadius = maxRad;
 	}
 	radius = newRadius;
-	context.lineWidth = radius * 2;
+	currentContext.lineWidth = radius * 2;
 	radSpan.innerHTML = radius;
 }
 
