@@ -8,3 +8,6 @@ var move_handler = function(e) {
 
 canvas.onpointerdown = down_handler;
 canvas.onpointermove = move_handler;
+
+canvas2.onpointerdown = down_handler;
+canvas2.onpointermove = move_handler;

@@ -1,28 +1,29 @@
 var canvas = document.getElementById('canvas');
-var context = canvas.getContext('2d');
+var context1 = canvas.getContext('2d');
 
 var canvas2 = document.getElementById('canvas2');
 var context2 = canvas2.getContext('2d');
 
-var currentContext = context;
+var currentContext = context1;
 
 var pressure = 1;
 var radius = 1;
+var color = 'black';
 // var dragging = false;
 
 canvas.width = (window.innerWidth / 2);
 canvas.height = window.innerHeight;
 
-canvas2.width = canvas.width;
+canvas2.width = 400;
 canvas2.height = canvas.height;
 
 var halfSizeWidth = window.innerWidth / 2;
 var height = window.innerHeight;
 
-context.lineWidth = radius*2;
+context1.lineWidth = radius*2;
 context2.lineWidth = radius*2;
-context2.fillStyle = 'black';
-context2.strokeStyle = 'black';
+context2.fillStyle = color;
+context2.strokeStyle = color;
 
 var _points = new Array();
 var _strokeID = 0;
@@ -50,9 +51,11 @@ function IndividualPoint(x, y, pressure, id) {
 	this.ID = id;
 }
 
-function Stroke(points, type) {
+function Stroke(points, type, color, radius) {
 	this.points = points;
 	this.type = type;
+	this.color = color;
+	this.radius = radius;
 }
 
 function Drawing(strokes, canvasWidth, canvasHeight) {
@@ -83,15 +86,15 @@ var redraw = function(strokes, length, canvasWidth, canvasHeight, intervalTime) 
 
 	var strokeDraw = window.setInterval(function() {
 		if (strokes[j].type === 'pencil') {
-			pencil(context);
+			pencil(context1);
 			// context.fillStyle = 'red';
 			// context.strokeStyle = 'red';
 			radius = 10 * super_points[i].Pressure;
-			context.lineWidth = radius * 2;
-			context.fillStyle = ("rgba(0,0,0," + super_points[i].Pressure + ")");
-			context.strokeStyle = ("rgba(0,0,0," + super_points[i].Pressure + ")");
+			context1.lineWidth = radius * 2;
+			context1.fillStyle = ("rgba(0,0,0," + super_points[i].Pressure + ")");
+			context1.strokeStyle = ("rgba(0,0,0," + super_points[i].Pressure + ")");
 		} else if (strokes[j].type === 'eraser') {
-			erase(context);
+			erase(context1);
 		}
 
 		var x = super_points[i].X * ratio;
@@ -99,24 +102,24 @@ var redraw = function(strokes, length, canvasWidth, canvasHeight, intervalTime) 
 
 
 		// if (steppin) {
-		// 	context.moveTo(x, y);
+		// 	context1.moveTo(x, y);
 		// }
 
-		context.lineTo(x, y);
-		context.stroke();
-		context.beginPath();
-		context.arc(x, y, radius, 0, Math.PI*2);
+		context1.lineTo(x, y);
+		context1.stroke();
+		context1.beginPath();
+		context1.arc(x, y, radius, 0, Math.PI*2);
 		// Firefox does not support offsetX or offsetY, so use client instead
 		// context.arc(e.offsetX, e.offsetY, radius, 0, Math.PI*2);
 		// context.arc(x, y, radius, startAngle, endAngle); // Angle in radians
-		context.fill();
-		context.beginPath();
-		context.moveTo(x, y);
+		context1.fill();
+		context1.beginPath();
+		context1.moveTo(x, y);
 		prevStepX = x;
 		prevStepY = y;
 		i++
 		if (i >= super_points.length) {
-			context.beginPath();
+			context1.beginPath();
 			clearInterval(strokeDraw);
 			i = 0;
 			j++;
@@ -142,9 +145,10 @@ replayBtn.addEventListener('click', function(e) {
 });
 
 function erase(context) {
-	context.strokeStyle = "rgb(255, 255, 255)";
-    context.globalCompositeOperation = "destination-out";  
-    context.strokeStyle = ("rgba(255,255,255,255)");
+	currentContext = context;
+	currentContext.strokeStyle = "rgb(255, 255, 255)";
+    currentContext.globalCompositeOperation = "destination-out";  
+    currentContext.strokeStyle = ("rgba(255,255,255,255)");
     type = 'eraser';
 }
 var eraseBtn = document.getElementById('erase_btn');
@@ -153,8 +157,9 @@ eraseBtn.addEventListener('click', function(e) {
 });
 
 function pencil(context) {
-	context.globalCompositeOperation = 'source-over';
-	context.strokeStyle = 'black';
+	currentContext = context;
+	currentContext.globalCompositeOperation = 'source-over';
+	currentContext.strokeStyle = 'black';
 	type = 'pencil';
 }
 var pencilBtn = document.getElementById('pencil_btn');
@@ -186,7 +191,7 @@ function stepByStep() {
 	j = 0;
 	recording = false;
 	steppin = true;
-	currentContext = context2;
+	// currentContext = context2;
 
 	console.log(new PointCloud('title', test.strokes[j].points));
 	_r.PointClouds.push(new PointCloud('title', test.strokes[j].points));
@@ -205,7 +210,7 @@ var stepBtn = document.getElementById('step_btn');
 stepBtn.addEventListener('click', stepByStep);
 
 function reset() {
-	context.clearRect(0, 0, canvas.width, canvas.height);
+	context1.clearRect(0, 0, canvas.width, canvas.height);
 	points = [];
 	strokes = [];
 }
@@ -214,7 +219,7 @@ function undo() {
 	var lastStroke = strokes.pop();
 	redoStrokes.push(lastStroke);
 
-	context.clearRect(0, 0, canvas.width, canvas.height);
+	context2.clearRect(0, 0, canvas.width, canvas.height);
 	// i = 0;
 	// j = 0;
 	steppin = false;
@@ -230,31 +235,31 @@ function undo() {
 
 
 			if (strokes[i].type === 'pencil') {
-				pencil(context);
+				pencil(context2);
 				// context.fillStyle = 'red';
 				// context.strokeStyle = 'red';
 				radius = 10 * pressure;
-				context.lineWidth = radius * 2;
-				context.fillStyle = ("rgba(0,0,0," + pressure + ")");
-				context.strokeStyle = ("rgba(0,0,0," + pressure + ")");
+				context2.lineWidth = radius * 2;
+				context2.fillStyle = ("rgba(0,0,0," + pressure + ")");
+				context2.strokeStyle = ("rgba(0,0,0," + pressure + ")");
 			} else if (strokes[i].type === 'eraser') {
-				erase(context);
+				erase(context2);
 			}
 
 			var x = strokes[i].points[j].X;
 			var y = strokes[i].points[j].Y;
 
 			console.log('stroke', i, 'point', j);
-			context.lineTo(x, y);
-			context.stroke();
-			context.beginPath();
-			context.arc(x, y, radius, 0, Math.PI*2);
+			context2.lineTo(x, y);
+			context2.stroke();
+			context2.beginPath();
+			context2.arc(x, y, radius, 0, Math.PI*2);
 			// Firefox does not support offsetX or offsetY, so use client instead
 			// context.arc(e.offsetX, e.offsetY, radius, 0, Math.PI*2);
 			// context.arc(x, y, radius, startAngle, endAngle); // Angle in radians
-			context.fill();
-			context.beginPath();
-			context.moveTo(x, y);
+			context2.fill();
+			context2.beginPath();
+			context2.moveTo(x, y);
 		}
 	}
 }
@@ -266,7 +271,7 @@ function redo() {
 	var firstRedoStroke = redoStrokes.pop();
 	strokes.push(firstRedoStroke);
 
-	context.clearRect(0, 0, canvas.width, canvas.height);
+	context2.clearRect(0, 0, canvas.width, canvas.height);
 	// i = 0;
 	// j = 0;
 	steppin = false;
@@ -282,31 +287,31 @@ function redo() {
 
 
 			if (strokes[i].type === 'pencil') {
-				pencil(context);
+				pencil(context2);
 				// context.fillStyle = 'red';
 				// context.strokeStyle = 'red';
 				radius = 10 * pressure;
-				context.lineWidth = radius * 2;
-				context.fillStyle = ("rgba(0,0,0," + pressure + ")");
-				context.strokeStyle = ("rgba(0,0,0," + pressure + ")");
+				context2.lineWidth = radius * 2;
+				context2.fillStyle = ("rgba(0,0,0," + pressure + ")");
+				context2.strokeStyle = ("rgba(0,0,0," + pressure + ")");
 			} else if (strokes[i].type === 'eraser') {
-				erase(context);
+				erase(context2);
 			}
 
 			var x = strokes[i].points[j].X;
 			var y = strokes[i].points[j].Y;
 
 			console.log('stroke', i, 'point', j);
-			context.lineTo(x, y);
-			context.stroke();
-			context.beginPath();
-			context.arc(x, y, radius, 0, Math.PI*2);
+			context2.lineTo(x, y);
+			context2.stroke();
+			context2.beginPath();
+			context2.arc(x, y, radius, 0, Math.PI*2);
 			// Firefox does not support offsetX or offsetY, so use client instead
 			// context.arc(e.offsetX, e.offsetY, radius, 0, Math.PI*2);
 			// context.arc(x, y, radius, startAngle, endAngle); // Angle in radians
-			context.fill();
-			context.beginPath();
-			context.moveTo(x, y);
+			context2.fill();
+			context2.beginPath();
+			context2.moveTo(x, y);
 		}
 	}
 }
@@ -316,17 +321,27 @@ redoBtn.addEventListener('click', redo);
 /* END MY CODE */
 
 var putPoint = function(e, context) {
+	currentContext = context;
+
+	if (currentContext === context1) {
+		var x = e.clientX;
+	} else {
+		var x = e.clientX - canvas2.offsetLeft;
+	}
+	
+	var y = e.clientY;
+
 	if (_isDown) {
-		context.lineTo(e.clientX, e.clientY);
-		context.stroke();
-		context.beginPath();
-		context.arc(e.clientX, e.clientY, radius, 0, Math.PI*2);
+		currentContext.lineTo(x, e.clientY);
+		currentContext.stroke();
+		currentContext.beginPath();
+		currentContext.arc(x, e.clientY, radius, 0, Math.PI*2);
 		// Firefox does not support offsetX or offsetY, so use client instead
 		// context.arc(e.offsetX, e.offsetY, radius, 0, Math.PI*2);
 		// context.arc(x, y, radius, startAngle, endAngle); // Angle in radians
-		context.fill();
-		context.beginPath();
-		context.moveTo(e.clientX, e.clientY);
+		currentContext.fill();
+		currentContext.beginPath();
+		currentContext.moveTo(x, y);
 
 	}
 }
@@ -387,12 +402,28 @@ function mouseUpEvent(e, context) {
 			//}
 			if (steppin) {
 				if (j < test.strokes.length)
+					var str = '';
+					console.log('points', _points.length);
+					if (_points.length >= 10) {
+						for (var i = 0; i < _points.length; i++) {
+							str += 'new Point(' + _points[i].X + ', ' + _points[i].Y + ', ' + _points[i].ID + '), ';
+						}
+						var result = _r.Recognize(_points);
+						console.log('str', str);
+						console.log('name', result.Name);
+						console.log('score', result.Score);
+					} else {
+						console.log("Too little input made. Please try again.");
+					}
+					_strokeID = 0; // signal to begin new gesture
+
 					redraw(test.strokes, test.strokes.length, test.canvasWidth, test.canvasHeight);
+
 					_r.PointClouds[_r.PointClouds.length - 1] = new PointCloud('title2', test.strokes[j].points);
 			}
 			
 			_isDown = false;
-			context.beginPath();
+			context2.beginPath();
 		}
 	} else if (e.button == 2) {
 		var str = '';
@@ -402,9 +433,9 @@ function mouseUpEvent(e, context) {
 				str += 'new Point(' + _points[i].X + ', ' + _points[i].Y + ', ' + _points[i].ID + '), ';
 			}
 			var result = _r.Recognize(_points);
-			console.log(str);
-			console.log(result.Name);
-			console.log(result.Score);
+			console.log('str', str);
+			console.log('name', result.Name);
+			console.log('score', result.Score);
 		} else {
 			console.log("Too little input made. Please try again.");
 		}
@@ -414,21 +445,21 @@ function mouseUpEvent(e, context) {
 }
 
 canvas.addEventListener('mousedown', function(e) {
-	mouseDownEvent(e, context)
+	mouseDownEvent(e, context1)
 });
 canvas.addEventListener('mouseup', function(e) {
-	mouseUpEvent(e, context)
+	mouseUpEvent(e, context1)
 });
 canvas.addEventListener('mousemove', function(e) {
-	mouseDragEvent(e, context)
+	mouseDragEvent(e, context1)
 });
 
 canvas.addEventListener('pointermove', function(e) {
 	pressure = e.pressure;
 	radius = 10 * e.pressure;
-	context.lineWidth = radius * 2;
-	context.fillStyle = ("rgba(0,0,0," + e.pressure + ")");
-	context.strokeStyle = ("rgba(0,0,0," + e.pressure*2 + ")");
+	context1.lineWidth = radius * 2;
+	context1.fillStyle = ("rgba(0,0,0," + e.pressure + ")");
+	context1.strokeStyle = ("rgba(0,0,0," + e.pressure*2 + ")");
 });
 
 window.addEventListener('keydown', function(e) {

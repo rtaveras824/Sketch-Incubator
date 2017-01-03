@@ -19,6 +19,8 @@ var mongojs = require('mongojs');
 
 var db = mongojs('project', ['drawings']);
 
+// console.log(Object.bsonsize(db.drawings.findOne({title:"Happy Face"})));
+
 app.get('/', function(req, res) {
 	// res.sendFile(path.join(__dirname + '/public/index.html'));
 	var drawings;
