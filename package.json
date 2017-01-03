@@ -1,0 +1,25 @@
+{
+  "name": "sketch-incubator",
+  "version": "1.0.0",
+  "description": "None",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rtaveras824/Sketch-Incubator.git"
+  },
+  "author": "Reuben Taveras",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/rtaveras824/Sketch-Incubator/issues"
+  },
+  "homepage": "https://github.com/rtaveras824/Sketch-Incubator#readme",
+  "dependencies": {
+    "body-parser": "^1.15.2",
+    "express": "^4.14.0",
+    "mongojs": "^2.4.0"
+  }
+}

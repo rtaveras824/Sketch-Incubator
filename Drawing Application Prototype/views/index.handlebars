@@ -37,7 +37,11 @@
 		Hidden
 	</canvas>
 
+	<p>{{{ drawings }}}</p>
+
 	<script type="text/javascript">
+		console.log('{{{ drawings }}}');
+
 		var test = {};
 
 		var drawingsDiv = document.getElementById('drawings');
@@ -49,6 +53,7 @@
 			btn.innerHTML = "{{ title }}";
 			drawingsDiv.appendChild(btn);
 			console.log("{{_id}}");
+			console.log('{{{ drawing }}}');
 		{{/each}}
 
 		/* <button id="{{ _id }}" data-drawing="{{ drawing }}" drawingclass="drawing_from_db">{{ title }}</button> */
