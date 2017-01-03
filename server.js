@@ -59,6 +59,16 @@ app.post('/add', function(req, res) {
 	});
 });
 
+app.get('/all', function(req, res) {
+	db.drawings.find({}, function(err, docs) {
+		if (err) {
+			console.log(err);
+		} else {
+			res.json(docs);
+		}
+	});
+});
+
 app.listen(port, function() {
 	console.log('App listening on port 3000');
 });
