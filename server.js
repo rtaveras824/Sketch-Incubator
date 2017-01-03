@@ -3,6 +3,8 @@ var app = express();
 var bodyParser = require('body-parser');
 var path = require('path');
 
+var port = process.env.PORT || 8080;
+
 app.use(express.static('public'));
 
 app.use(bodyParser.json({limit: '50mb'}));
@@ -55,6 +57,6 @@ app.post('/add', function(req, res) {
 	});
 });
 
-app.listen(3000, function() {
+app.listen(port, function() {
 	console.log('App listening on port 3000');
 });
