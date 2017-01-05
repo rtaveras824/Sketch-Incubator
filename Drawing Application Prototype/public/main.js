@@ -364,6 +364,9 @@ function mouseDownEvent(e, context) {
 
 	var x = e.clientX;
 	var y = e.clientY;
+
+	
+
 	if (e.button <= 1) {
 		_isDown = true;
 		if(_strokeID == 0) {
@@ -382,6 +385,9 @@ function mouseDownEvent(e, context) {
 function mouseDragEvent(e, context) {
 	var x = e.clientX;
 	var y = e.clientY;
+
+	
+
 	if (_isDown) {
 		_points[_points.length] = new Point(x, y, _strokeID);
 
@@ -394,6 +400,9 @@ function mouseDragEvent(e, context) {
 }
 
 function mouseUpEvent(e, context) {
+	var x = e.clientX;
+	var y = e.clientY;
+
 	if (e.button <= 1) {
 		if (_isDown) {
 			//if (recording) {
@@ -426,6 +435,15 @@ function mouseUpEvent(e, context) {
 			context2.beginPath();
 		}
 	} else if (e.button == 2) {
+
+		var imgData = context1.getImageData(x, y, 1, 1).data;
+		r = imgData[0];
+		g = imgData[1];
+		b = imgData[2];
+
+		console.log(r, g, b);
+		console.log(imgData);
+
 		var str = '';
 		console.log('points', _points.length);
 		if (_points.length >= 10) {
@@ -458,8 +476,8 @@ canvas.addEventListener('pointermove', function(e) {
 	pressure = e.pressure;
 	radius = 10 * e.pressure;
 	context1.lineWidth = radius * 2;
-	context1.fillStyle = ("rgba(0,0,0," + e.pressure + ")");
-	context1.strokeStyle = ("rgba(0,0,0," + e.pressure*2 + ")");
+	context1.fillStyle = "rgba(" + r + ", " + g + ", " + b + ", " + e.pressure + ")";
+	context1.strokeStyle = "rgba(" + r + ", " + g + ", " + b + ", " + e.pressure + ")";
 });
 
 window.addEventListener('keydown', function(e) {

@@ -1,3 +1,7 @@
+var r = 0;
+var g = 0;
+var b = 0;
+
 var colors = ['black', 'gray', 'white', 'red', 'orange', 'yellow', 'green', 'blue', 'indigo', 'violet'];
 
 for (var i = 0, n = colors.length; i < n; i++) {
@@ -19,7 +23,34 @@ function setColor(color) {
 
 function setSwatch(e) {
 	var swatch = e.target;
-	setColor(swatch.style.backgroundColor);
+	console.log(swatch.style.backgroundColor);
+	switch (swatch.style.backgroundColor) {
+		case 'black':
+			r = 0;
+			g = 0;
+			b = 0;
+			break;
+		case 'red':
+			r = 255;
+			g = 0;
+			b = 0;
+			break;
+		case 'green':
+			r = 0;
+			g = 255;
+			b = 0;
+			break;
+		case 'blue':
+			r = 0;
+			g = 0;
+			b = 255;
+			break;
+		default:
+			r = 0;
+			g = 0;
+			b = 0;
+	}
+	// setColor(swatch.style.backgroundColor);
 	swatch.className += ' active';
 }
 

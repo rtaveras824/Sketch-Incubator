@@ -1,0 +1,4 @@
+{
+	"MONGODB_URI": "mongodb://heroku_gvtv9rjn:70thn39e8f7qv5f7ldcokjbgt1@ds151018.mlab.com:51018/heroku_gvtv9rjn",
+	"jwtSecret": "itKo10aoKPIOid091kDIKj901231"
+}
