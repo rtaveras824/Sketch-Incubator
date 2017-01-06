@@ -58,10 +58,28 @@ UserFollow
 
 const express = require('express');
 const app = express();
+const bodyParser = require('body-parser');
 const path = require('path');
 const passport = require('passport');
+const mongoose = require('mongoose');
+
+mongoose.connect('mongodb://localhost/authTest');
+mongoose.connection.on('error', (err) => {
+	console.log('Mongoose error', err);
+});
+require('./models/User');
 
 app.use(express.static('public'));
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+app.use(passport.initialize());
+
+const localLoginStrategy = require('./passport/local-login');
+passport.use('local-login', localLoginStrategy);
+
+const authRoutes = require('./routes/auth');
+
+app.use('/auth', authRoutes);
 
 app.get('*', function(req, res) {
 	res.sendFile(path.join(__dirname, 'public/index.html'));

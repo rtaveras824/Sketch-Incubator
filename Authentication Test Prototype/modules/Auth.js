@@ -1,9 +1,15 @@
-const Auth = {
-	authenticateUser: (token) => {
+class Auth {
+	static authenticateUser(token) {
 		localStorage.setItem('token', token);
-	},
-	isUserAuthenticated: () => {
-		return localStorage.getItem('token') !== null;
+	}
+
+	static isUserAuthenticated() {
+		if (localStorage.getItem('token') == null)
+			return false;
+		else if (localStorage.getItem('token') == 'undefined')
+			return false;
+		else
+			return true;
 	}
 };
 

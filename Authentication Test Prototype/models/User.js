@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const bcryptjs = require('bcryptjs');
 
 const roles = ['user', 'admin'];
 
@@ -59,6 +60,10 @@ const UserSchema = new Schema({
 		default: Date.now
 	}
 });
+
+UserSchema.methods.comparePassword = function comparePassword(password, callback) {
+	bcryptjs.compare(password, this.password, callback);
+};
 
 const User = mongoose.model('User', UserSchema);
 
