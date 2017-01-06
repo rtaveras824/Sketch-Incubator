@@ -1,5 +1,5 @@
 import Base from '../src/components/Base.jsx';
-import Body from '../src/components/Body.jsx';
+import MainPage from '../src/containers/MainPage.jsx';
 import LoginPage from '../src/containers/LoginPage.jsx';
 import NotFound from '../src/components/NotFound.jsx';
 
@@ -12,7 +12,7 @@ const routes = {
 			path: '/',
 			getComponent: (location, callback) => {
 				if (Auth.isUserAuthenticated()) {
-					callback(null, Body);
+					callback(null, MainPage);
 				} else {
 					callback(null, LoginPage);
 				}

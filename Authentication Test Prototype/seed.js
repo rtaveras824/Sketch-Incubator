@@ -3,7 +3,6 @@ const async = require('async');
 const mongojs = require('mongojs');
 const ObjectId = mongojs.ObjectId;
 
-/*
 const seedUsers = [
 	{
 		_id: ObjectId("58572d3d989b6d2588482998"),
@@ -44,17 +43,91 @@ const seedUsers = [
 		updated: new Date()
 	}
 ];
-*/
 
-const hashPassword = function(user, callback) {
-	bcryptjs.hash(user.password, 10, function(err, hash) {
-		if (err) throw err;
-		user.password = hash;
-		callback(null, user);
-	});
-};
+const seedCategories = [
+	{
+		_id: ObjectId("5863f68da5a1ac0ecc852111"),
+		name: 'People'
+	},
+	{
+		_id: ObjectId("5863f68da5a1ac0ecc852112"),
+		name: 'Anatomy',
+		parent: ObjectId("5863f68da5a1ac0ecc852111"),
+		ancestors: [{
+			_id: ObjectId("5863f68da5a1ac0ecc852111"),
+			name: 'People'
+		}]
+	},
+	{
+		_id: ObjectId("5863f68da5a1ac0ecc852113"),
+		name: 'Face',
+		parent: ObjectId("5863f68da5a1ac0ecc852112"),
+		ancestors: [
+			{
+				_id: ObjectId("5863f68da5a1ac0ecc852112"),
+				name: 'Anatomy'
+			},
+			{
+				_id: ObjectId("5863f68da5a1ac0ecc852111"),
+				name: 'People'
+			}
+		]
+	},
+	{
+		_id: ObjectId("5863f68da5a1ac0ecc852114"),
+		name: 'Torso',
+		parent: ObjectId("5863f68da5a1ac0ecc852112"),
+		ancestors: [
+			{
+				_id: ObjectId("5863f68da5a1ac0ecc852112"),
+				name: 'Anatomy'
+			},
+			{
+				_id: ObjectId("5863f68da5a1ac0ecc852111"),
+				name: 'People'
+			}
+		]
+	}
+];
 
-console.log('testing');
+const seedDrawings = [
+	{
+		_id: ObjectId("5863f68da5a1ac0ecc852463"),
+		title: 'Boobs',
+		author: ObjectId("5863f68da5a1ac0ecc852557"),
+		drawing: 'THIS IS DRAWING',
+		category: ObjectId("5863f68da5a1ac0ecc852113"),
+		created: new Date(),
+		updated: new Date()
+	},
+	{
+		_id: ObjectId("5863f68da5a1ac0ecc852464"),
+		title: 'Boobs 2',
+		author: ObjectId("58572d3d989b6d2588482998"),
+		drawing: 'THIS IS DRAWING 2222',
+		category: ObjectId("5863f68da5a1ac0ecc852114"),
+		created: new Date(),
+		updated: new Date()
+	},
+	{
+		_id: ObjectId("5863f68da5a1ac0ecc852485"),
+		title: 'Boobs 3',
+		author: ObjectId("5863f68da5a1ac0ecc852557"),
+		drawing: 'THIS IS DRAWING 3333333',
+		category: ObjectId("5863f68da5a1ac0ecc852112"),
+		created: new Date(),
+		updated: new Date()
+	},
+	{
+		_id: ObjectId("5863f68da5a1ac0ecc852482"),
+		title: 'Boobs 4',
+		author: ObjectId("58572d3d989b6d2588482998"),
+		drawing: 'THIS IS DRAWING 44444444444',
+		category: ObjectId("5863f68da5a1ac0ecc852113"),
+		created: new Date(),
+		updated: new Date()
+	}
+];
 
 const databaseUrl = 'authTest';
 const collections = ['users', 'drawings', 'categories', 'userdrawings', 'userfollows'];
@@ -67,9 +140,25 @@ db.on('connect', function() {
 	console.log('Database connected');	
 });
 
-async.map(seedUsers, hashPassword, function(error, result) {
-	console.log(result);
-	db.users.save(result);
-});
+const hashPassword = function(user, callback) {
+	bcryptjs.hash(user.password, 10, function(err, hash) {
+		if (err) throw err;
+		user.password = hash;
+		callback(null, user);
+	});
+};
+
+// async.map(seedUsers, hashPassword, function(error, result) {
+// 	console.log(result);
+// 	db.users.save(result);
+// });
+
+// seedCategories.map(function(category) {
+// 	return db.categories.save(category);
+// });
+
+// seedDrawings.map(function(drawing) {
+// 	return db.drawings.save(drawing);
+// });
 
 console.log("the end");

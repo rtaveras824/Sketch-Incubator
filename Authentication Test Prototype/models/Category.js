@@ -12,7 +12,7 @@ const CategorySchema = new Schema({
 		ref: 'Category'
 	},
 	ancestors: [{
-		id: {
+		_id: {
 			type: Schema.Types.ObjectId,
 			ref: 'Category'
 		},

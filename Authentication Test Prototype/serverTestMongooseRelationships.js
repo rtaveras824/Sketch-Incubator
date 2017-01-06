@@ -68,6 +68,8 @@ mongoose.connection.on('error', (err) => {
 	console.log('Mongoose error', err);
 });
 require('./models/User');
+require('./models/Drawing');
+require('./models/Category');
 
 app.use(express.static('public'));
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -78,8 +80,13 @@ const localLoginStrategy = require('./passport/local-login');
 passport.use('local-login', localLoginStrategy);
 
 const authRoutes = require('./routes/auth');
+const apiRoutes = require('./routes/api');
+const authCheckMiddleware = require('./middleware/auth-check');
+
+app.use('/api', authCheckMiddleware);
 
 app.use('/auth', authRoutes);
+app.use('/api', apiRoutes);
 
 app.get('*', function(req, res) {
 	res.sendFile(path.join(__dirname, 'public/index.html'));

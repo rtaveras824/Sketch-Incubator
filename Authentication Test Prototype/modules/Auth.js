@@ -11,6 +11,10 @@ class Auth {
 		else
 			return true;
 	}
+
+	static getToken() {
+		return localStorage.getItem('token');
+	}
 };
 
 export default Auth;

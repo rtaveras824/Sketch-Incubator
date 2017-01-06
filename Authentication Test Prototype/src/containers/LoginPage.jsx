@@ -41,8 +41,6 @@ class LoginPage extends React.Component {
 				password
 			}).then(function(response) {
 				console.log(response.data);
-				console.log('email', email);
-				console.log('password', password);
 				Auth.authenticateUser(response.data.token);
 				browserHistory.push('/');
 			}).catch(function(err) {
