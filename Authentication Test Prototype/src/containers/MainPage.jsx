@@ -15,12 +15,17 @@ class MainPage extends React.Component {
 	}
 
 	componentWillMount() {
-		const token = Auth.getToken();
-		console.log(token);
+		const config = {};
+		if (Auth.isUserAuthenticated()) {
+			console.log('Authenticated');
+			const token = Auth.getToken();
+			config.headers = {
+				"Authorization": `bearer ${token}`
+			};
+		}
+		
 		axios.get('/api/drawings',
-			{
-				headers: { "Authorization": `bearer ${token}` }
-			})
+			config)
 			.then(function(response) {
 				console.log('returning');
 				console.log(response);

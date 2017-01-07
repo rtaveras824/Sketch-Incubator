@@ -70,6 +70,8 @@ mongoose.connection.on('error', (err) => {
 require('./models/User');
 require('./models/Drawing');
 require('./models/Category');
+require('./models/UserDrawing');
+require('./models/UserFollow');
 
 app.use(express.static('public'));
 app.use(bodyParser.urlencoded({ extended: false }));

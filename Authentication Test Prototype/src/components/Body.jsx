@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router';
 
 const Body = ({ author, title, drawing, category }) => (
 	<div>
@@ -7,10 +8,10 @@ const Body = ({ author, title, drawing, category }) => (
 		<p>{ drawing }</p>
 		{ 
 			category.ancestors && (category.ancestors.reverse().map(function(x) {
-				return (<p>{ x.name }</p>)
+				return (<Link to={ `api/${ x._id }` }>{ x.name }</Link>)
 			}))
 		}
-		<p>{ category.name }</p>
+		<Link to={ `api/${ category._id }` }>{ category.name }</Link>
 	</div>
 );
 

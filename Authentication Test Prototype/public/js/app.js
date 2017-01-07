@@ -26404,6 +26404,14 @@
 
 	var _LoginPage2 = _interopRequireDefault(_LoginPage);
 
+	var _Category = __webpack_require__(414);
+
+	var _Category2 = _interopRequireDefault(_Category);
+
+	var _Drawing = __webpack_require__(415);
+
+	var _Drawing2 = _interopRequireDefault(_Drawing);
+
 	var _NotFound = __webpack_require__(413);
 
 	var _NotFound2 = _interopRequireDefault(_NotFound);
@@ -26422,16 +26430,20 @@
 				if (_Auth2.default.isUserAuthenticated()) {
 					callback(null, _MainPage2.default);
 				} else {
-					callback(null, _LoginPage2.default);
+					//callback(null, LoginPage);
+					callback(null, _MainPage2.default);
 				}
 			}
-		},
-		// {
-		// 	path: '/user/:userid',
-		// 	component: Profile
-		// },
-
-		{
+		}, {
+			path: '/login',
+			component: _LoginPage2.default
+		}, {
+			path: '/api/:category_id',
+			component: _Category2.default
+		}, {
+			path: '/api/drawing/:drawing_id',
+			component: _Drawing2.default
+		}, {
 			path: '*',
 			component: _NotFound2.default
 		}]
@@ -26524,11 +26536,16 @@
 		_createClass(MainPage, [{
 			key: 'componentWillMount',
 			value: function componentWillMount() {
-				var token = _Auth2.default.getToken();
-				console.log(token);
-				_axios2.default.get('/api/drawings', {
-					headers: { "Authorization": 'bearer ' + token }
-				}).then(function (response) {
+				var config = {};
+				if (_Auth2.default.isUserAuthenticated()) {
+					console.log('Authenticated');
+					var token = _Auth2.default.getToken();
+					config.headers = {
+						"Authorization": 'bearer ' + token
+					};
+				}
+
+				_axios2.default.get('/api/drawings', config).then(function (response) {
 					console.log('returning');
 					console.log(response);
 					this.setState({
@@ -64153,6 +64170,7 @@
 		}, {
 			key: 'isUserAuthenticated',
 			value: function isUserAuthenticated() {
+				console.log(localStorage.getItem('token'));
 				if (localStorage.getItem('token') == null) return false;else if (localStorage.getItem('token') == 'undefined') return false;else return true;
 			}
 		}, {
@@ -64183,6 +64201,8 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
+	var _reactRouter = __webpack_require__(178);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var Body = function Body(_ref) {
@@ -64210,14 +64230,14 @@
 			),
 			category.ancestors && category.ancestors.reverse().map(function (x) {
 				return _react2.default.createElement(
-					'p',
-					null,
+					_reactRouter.Link,
+					{ to: 'api/' + x._id },
 					x.name
 				);
 			}),
 			_react2.default.createElement(
-				'p',
-				null,
+				_reactRouter.Link,
+				{ to: 'api/' + category._id },
 				category.name
 			)
 		);
@@ -64399,6 +64419,170 @@
 	};
 
 	exports.default = NotFound;
+
+/***/ },
+/* 414 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _axios = __webpack_require__(384);
+
+	var _axios2 = _interopRequireDefault(_axios);
+
+	var _reactRouter = __webpack_require__(178);
+
+	var _Auth = __webpack_require__(409);
+
+	var _Auth2 = _interopRequireDefault(_Auth);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var Category = function (_React$Component) {
+		_inherits(Category, _React$Component);
+
+		function Category(props) {
+			_classCallCheck(this, Category);
+
+			var _this = _possibleConstructorReturn(this, (Category.__proto__ || Object.getPrototypeOf(Category)).call(this, props));
+
+			_this.state = {
+				drawings: [{ 'title': 'Reuben' }]
+			};
+			return _this;
+		}
+
+		_createClass(Category, [{
+			key: 'componentWillMount',
+			value: function componentWillMount() {
+				var config = {};
+				if (_Auth2.default.isUserAuthenticated()) {
+					console.log('Authenticated');
+					var token = _Auth2.default.getToken();
+					config.headers = {
+						"Authorization": 'bearer ' + token
+					};
+				}
+
+				_axios2.default.get('/api/' + this.props.params.category_id, config).then(function (response) {
+					this.setState({
+						drawings: response.data
+					});
+				}.bind(this));
+			}
+		}, {
+			key: 'showDrawings',
+			value: function showDrawings() {}
+		}, {
+			key: 'render',
+			value: function render() {
+				return _react2.default.createElement(
+					'div',
+					null,
+					this.state.drawings.map(function (drawing) {
+						return _react2.default.createElement(
+							_reactRouter.Link,
+							{ to: '/api/drawing/' + drawing._id },
+							drawing.title
+						);
+					})
+				);
+			}
+		}]);
+
+		return Category;
+	}(_react2.default.Component);
+
+	exports.default = Category;
+
+/***/ },
+/* 415 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _axios = __webpack_require__(384);
+
+	var _axios2 = _interopRequireDefault(_axios);
+
+	var _Auth = __webpack_require__(409);
+
+	var _Auth2 = _interopRequireDefault(_Auth);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var Drawing = function (_React$Component) {
+		_inherits(Drawing, _React$Component);
+
+		function Drawing(props) {
+			_classCallCheck(this, Drawing);
+
+			return _possibleConstructorReturn(this, (Drawing.__proto__ || Object.getPrototypeOf(Drawing)).call(this, props));
+		}
+
+		_createClass(Drawing, [{
+			key: 'componentWillMount',
+			value: function componentWillMount() {
+				var config = {};
+				if (_Auth2.default.isUserAuthenticated()) {
+					console.log('Authenticated');
+					var token = _Auth2.default.getToken();
+					config.headers = {
+						"Authorization": 'bearer ' + token
+					};
+				}
+
+				_axios2.default.get('/api/drawing/' + this.props.params.drawing_id, config).then(function (response) {
+					console.log(response);
+				});
+			}
+		}, {
+			key: 'render',
+			value: function render() {
+				return _react2.default.createElement(
+					'div',
+					null,
+					this.props.params.drawing_id
+				);
+			}
+		}]);
+
+		return Drawing;
+	}(_react2.default.Component);
+
+	exports.default = Drawing;
 
 /***/ }
 /******/ ]);

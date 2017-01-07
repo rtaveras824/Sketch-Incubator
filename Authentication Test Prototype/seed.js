@@ -129,6 +129,32 @@ const seedDrawings = [
 	}
 ];
 
+const seedUserDrawing = [
+	{
+		_id: ObjectId("5863f68da5a1ac0ecc853333"),
+		user_id: ObjectId("5863f68da5a1ac0ecc852557"),
+		drawing_id: ObjectId("5863f68da5a1ac0ecc852464"),
+		like: true,
+		favorite: true
+	},
+	{
+		_id: ObjectId("5863f68da5a1ac0ecc853334"),
+		user_id: ObjectId("5863f68da5a1ac0ecc852557"),
+		drawing_id: ObjectId("5863f68da5a1ac0ecc852482"),
+		like: true,
+		favorite: false
+	}
+];
+
+const seedUserFollow = [
+	{
+		_id: ObjectId("5863f68da5a1ac0ecc854444"),
+		following_id: ObjectId("58572d3d989b6d2588482998"),
+		follower_id: ObjectId("5863f68da5a1ac0ecc852557")
+
+	}
+];
+
 const databaseUrl = 'authTest';
 const collections = ['users', 'drawings', 'categories', 'userdrawings', 'userfollows'];
 const db = mongojs(databaseUrl, collections);
@@ -159,6 +185,14 @@ const hashPassword = function(user, callback) {
 
 // seedDrawings.map(function(drawing) {
 // 	return db.drawings.save(drawing);
+// });
+
+// seedUserDrawing.map(function(userDrawing) {
+// 	return db.userdrawings.save(userDrawing);
+// });
+
+// seedUserFollow.map(function(userFollow) {
+// 	return db.userfollows.save(userFollow);
 // });
 
 console.log("the end");
