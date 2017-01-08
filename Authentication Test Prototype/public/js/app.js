@@ -64549,7 +64549,14 @@
 		function Drawing(props) {
 			_classCallCheck(this, Drawing);
 
-			return _possibleConstructorReturn(this, (Drawing.__proto__ || Object.getPrototypeOf(Drawing)).call(this, props));
+			var _this = _possibleConstructorReturn(this, (Drawing.__proto__ || Object.getPrototypeOf(Drawing)).call(this, props));
+
+			_this.state = {
+				drawing: [],
+				like: false,
+				favorite: false
+			};
+			return _this;
 		}
 
 		_createClass(Drawing, [{
@@ -64566,7 +64573,19 @@
 
 				_axios2.default.get('/api/drawing/' + this.props.params.drawing_id, config).then(function (response) {
 					console.log(response);
-				});
+					if (response.data.length > 1) {
+						this.setState({
+							like: response.data[1].like,
+							favorite: response.data[1].favorite
+						});
+					}
+
+					console.log(response.data[1].like);
+
+					this.setState({
+						drawing: response.data[0]
+					});
+				}.bind(this));
 			}
 		}, {
 			key: 'render',
@@ -64574,7 +64593,17 @@
 				return _react2.default.createElement(
 					'div',
 					null,
-					this.props.params.drawing_id
+					this.props.params.drawing_id,
+					this.state.like && _react2.default.createElement(
+						'p',
+						null,
+						'Like'
+					),
+					this.state.favorite && _react2.default.createElement(
+						'p',
+						null,
+						'Favorite'
+					)
 				);
 			}
 		}]);

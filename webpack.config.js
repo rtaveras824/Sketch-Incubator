@@ -14,7 +14,7 @@ module.exports = {
 		// apply loaders to files that meet given conditions
 		loaders: [{
 			test: /\.jsx?$/,
-			include: path.join(__dirname, '/client/src'),
+			exclude: /(node_modules|bower_components)/,
 			loader: 'babel',
 			query: {
 				presets: ['react', 'es2015']

@@ -15,15 +15,11 @@ router.get('/drawings', function(req, res, next) {
 		.populate('author category')
 		.exec(function(err, result) {
 			if (err) return err;
-			console.log(JSON.stringify(result));
 			res.json(result);
 		});
 });
 
 router.get('/:category_id', function(req, res, next) {
-	console.log('found');
-	console.log(req.params.category_id);
-
 	return Category.find({
 		ancestors: {
 			$elemMatch: {
@@ -31,7 +27,6 @@ router.get('/:category_id', function(req, res, next) {
 			}
 		}
 	}, function(err, docs) {
-		console.log(docs);
 
 		var categoryIds = [];
 		categoryIds.push(ObjectId(req.params.category_id));
@@ -48,7 +43,6 @@ router.get('/:category_id', function(req, res, next) {
 			}
 		}).exec(function(err, drawings) {
 			if (err) return err;
-			console.log(drawings.length);
 			res.send(drawings);
 		});
 	})

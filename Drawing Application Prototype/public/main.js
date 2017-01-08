@@ -480,6 +480,8 @@ canvas.addEventListener('pointermove', function(e) {
 	context1.strokeStyle = "rgba(" + r + ", " + g + ", " + b + ", " + e.pressure + ")";
 });
 
+
+
 window.addEventListener('keydown', function(e) {
 	var keyPressed = e.which || e.keyCode;
 	console.log(keyPressed);
@@ -505,4 +507,12 @@ canvas2.addEventListener('mouseup', function(e) {
 });
 canvas2.addEventListener('mousemove', function(e) {
 	mouseDragEvent(e, context2)
+});
+
+canvas2.addEventListener('pointermove', function(e) {
+	pressure = e.pressure;
+	radius = 10 * e.pressure;
+	context2.lineWidth = radius * 2;
+	context2.fillStyle = "rgba(" + r + ", " + g + ", " + b + ", " + e.pressure + ")";
+	context2.strokeStyle = "rgba(" + r + ", " + g + ", " + b + ", " + e.pressure + ")";
 });
