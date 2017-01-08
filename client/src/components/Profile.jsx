@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router';
 import Auth from '../../../modules/Auth';
 import axios from 'axios';
 
@@ -18,10 +19,12 @@ class Profile extends React.Component {
 			dribbble_url: '',
 			deviantart_url: '',
 			linkedin_url: '',
-			match: false
+			match: false,
+			follow: false
 		}
 
 		this.setHeader = this.setHeader.bind(this);
+		this.toggleFollowButton = this.toggleFollowButton.bind(this);
 	}
 
 	setHeader() {
@@ -42,17 +45,47 @@ class Profile extends React.Component {
 			this.setHeader())
 		.then(function(response) {
 			console.log(response);
-			this.setState(response.data);
+			if (response.data.length > 0) {
+				this.setState(response.data[0]);
+				if (response.data[1] !== null) {
+					this.setState({
+						follow: true
+						})
+				}
+			} else {
+				this.setState(response.data);
+			}
+			
 			}.bind(this))
 		.catch(function(err) {
 			console.log(err);
 			})
 	}
 
+	toggleFollowButton() {
+		axios.post('/api/userfollow', {
+			following_id: this.props.params.user_id
+		},
+		this.setHeader())
+		.then(function(response) {
+			console.log(response);
+			this.setState({
+				follow: response.data.follow
+				});
+			}.bind(this))
+		.catch(function(err) {
+			console.log(err)
+			});
+	}
+
 	render() {
 		return (
 			<div>
-				{ this.state.match && <a href={ `/update/${ this.state._id }` }>Update Profile</a> }
+				{ this.state.match ? 
+					<Link href={ `/update/${ this.state._id }` }>Update Profile</Link> : 
+					Auth.isUserAuthenticated() && 
+						<button onClick={ this.toggleFollowButton }>{ this.state.follow ? 'Unfollow' : 'Follow' }</button>
+				}
 				<h1>{ this.state.display_name }</h1>
 				<p>Email: { this.state.email }</p>
 				{ this.state.address && <p>Address: { this.state.address }</p> }

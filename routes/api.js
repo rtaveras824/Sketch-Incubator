@@ -16,11 +16,33 @@ router.get('/user/:user_id', function(req, res, next) {
 		.exec(function(err, result) {
 			if (req.params.user_id === req.user_id) {
 				result.match = true;
+				console.log(JSON.stringify(result));
+				res.json(result);
 			} else {
 				result.match = false;
+				if (req.user_id) {
+					return UserFollow.find({
+						$and: [
+							{
+								follower_id: ObjectId(req.user_id)
+							},
+							{
+								following_id: ObjectId(req.params.user_id)
+							}
+						]
+					})
+					.exec(function(err, response) {
+						const combo = [];
+						combo.push(result);
+						combo.push(response[0]);
+						console.log('combo', combo);
+						res.send(combo);
+					});
+				} else {
+					res.json(result);
+				}
 			}
-			console.log(JSON.stringify(result));
-			res.json(result);
+			
 		});
 })
 
@@ -49,6 +71,39 @@ router.post('/update', function(req, res, next) {
 			res.json(result);
 		});
 	}
+});
+
+router.post('/userfollow', function(req, res, next) {
+	return UserFollow.find({
+		$and: [
+			{
+				following_id: ObjectId(req.body.following_id)
+			},
+			{
+				follower_id: ObjectId(req.user_id)
+			}
+		]
+	}).exec(function(err, userfollow) {
+		if (err) return err;
+
+		if (userfollow.length > 0) {
+			return UserFollow.remove({ _id: userfollow[0]._id }, function(err) {
+				if (err) return err;
+
+				res.send({ follow: false });
+			});
+		} else {
+			var newFollow = new UserFollow({
+				follower_id: req.user_id,
+				following_id: req.body.following_id,
+			});
+			newFollow.save(function(err, newEntry) {
+				if (err) return err;
+
+				res.send({ follow: true });
+			})
+		}
+	})
 });
 
 router.get('/drawings', function(req, res, next) {

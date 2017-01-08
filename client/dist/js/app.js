@@ -26408,23 +26408,27 @@
 
 	var _SignUpPage2 = _interopRequireDefault(_SignUpPage);
 
-	var _Category = __webpack_require__(268);
+	var _ApplicationPage = __webpack_require__(268);
+
+	var _ApplicationPage2 = _interopRequireDefault(_ApplicationPage);
+
+	var _Category = __webpack_require__(269);
 
 	var _Category2 = _interopRequireDefault(_Category);
 
-	var _Drawing = __webpack_require__(269);
+	var _Drawing = __webpack_require__(270);
 
 	var _Drawing2 = _interopRequireDefault(_Drawing);
 
-	var _Profile = __webpack_require__(270);
+	var _Profile = __webpack_require__(271);
 
 	var _Profile2 = _interopRequireDefault(_Profile);
 
-	var _Update = __webpack_require__(271);
+	var _Update = __webpack_require__(272);
 
 	var _Update2 = _interopRequireDefault(_Update);
 
-	var _NotFound = __webpack_require__(272);
+	var _NotFound = __webpack_require__(273);
 
 	var _NotFound2 = _interopRequireDefault(_NotFound);
 
@@ -26471,6 +26475,9 @@
 		}, {
 			path: '/update/:user_id',
 			component: _Update2.default
+		}, {
+			path: '/application/draw',
+			component: _ApplicationPage2.default
 		}, {
 			path: '*',
 			component: _NotFound2.default
@@ -26546,6 +26553,8 @@
 	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	console.log(_Auth2.default);
 
 	var MainPage = function (_React$Component) {
 		_inherits(MainPage, _React$Component);
@@ -28181,49 +28190,45 @@
 			null,
 			_react2.default.createElement(
 				_reactRouter.Link,
-				{ to: '/login' },
+				{ to: '/drawing/' + drawing_id },
 				_react2.default.createElement(
-					_reactRouter.Link,
-					{ to: '/drawing/' + drawing_id },
-					_react2.default.createElement(
-						'h1',
-						null,
-						title
-					)
-				),
-				_react2.default.createElement(
-					_reactRouter.Link,
-					{ to: '/profile/' + author_id },
-					_react2.default.createElement(
-						'h3',
-						null,
-						author
-					)
-				),
-				_react2.default.createElement(
-					'p',
+					'h1',
 					null,
-					drawing
-				),
-				category.ancestors && category.ancestors.reverse().map(function (x) {
-					return _react2.default.createElement(
-						_reactRouter.Link,
-						{ to: '/category/' + x._id },
-						_react2.default.createElement(
-							'button',
-							null,
-							x.name
-						)
-					);
-				}),
+					title
+				)
+			),
+			_react2.default.createElement(
+				_reactRouter.Link,
+				{ to: '/profile/' + author_id },
 				_react2.default.createElement(
+					'h3',
+					null,
+					author
+				)
+			),
+			_react2.default.createElement(
+				'p',
+				null,
+				drawing
+			),
+			category.ancestors && category.ancestors.reverse().map(function (x, i) {
+				return _react2.default.createElement(
 					_reactRouter.Link,
-					{ to: 'category/' + category._id },
+					{ key: i, to: '/category/' + x._id },
 					_react2.default.createElement(
 						'button',
 						null,
-						category.name
+						x.name
 					)
+				);
+			}),
+			_react2.default.createElement(
+				_reactRouter.Link,
+				{ to: 'category/' + category._id },
+				_react2.default.createElement(
+					'button',
+					null,
+					category.name
 				)
 			)
 		);
@@ -28613,6 +28618,51 @@
 /* 268 */
 /***/ function(module, exports, __webpack_require__) {
 
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var ApplicationPage = function (_React$Component) {
+		_inherits(ApplicationPage, _React$Component);
+
+		function ApplicationPage(props) {
+			_classCallCheck(this, ApplicationPage);
+
+			return _possibleConstructorReturn(this, (ApplicationPage.__proto__ || Object.getPrototypeOf(ApplicationPage)).call(this, props));
+		}
+
+		_createClass(ApplicationPage, [{
+			key: "render",
+			value: function render() {
+				return _react2.default.createElement("canvas", { id: "canvas" });
+			}
+		}]);
+
+		return ApplicationPage;
+	}(_react2.default.Component);
+
+	exports.default = ApplicationPage;
+
+/***/ },
+/* 269 */
+/***/ function(module, exports, __webpack_require__) {
+
 	'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
@@ -28701,7 +28751,7 @@
 	exports.default = Category;
 
 /***/ },
-/* 269 */
+/* 270 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -28779,8 +28829,6 @@
 						});
 					}
 
-					console.log(response.data[1].like);
-
 					this.setState({
 						drawing: response.data[0]
 					});
@@ -28847,7 +28895,7 @@
 	exports.default = Drawing;
 
 /***/ },
-/* 270 */
+/* 271 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -28861,6 +28909,8 @@
 	var _react = __webpack_require__(1);
 
 	var _react2 = _interopRequireDefault(_react);
+
+	var _reactRouter = __webpack_require__(178);
 
 	var _Auth = __webpack_require__(261);
 
@@ -28898,10 +28948,12 @@
 				dribbble_url: '',
 				deviantart_url: '',
 				linkedin_url: '',
-				match: false
+				match: false,
+				follow: false
 			};
 
 			_this.setHeader = _this.setHeader.bind(_this);
+			_this.toggleFollowButton = _this.toggleFollowButton.bind(_this);
 			return _this;
 		}
 
@@ -28924,7 +28976,30 @@
 			value: function componentWillMount() {
 				_axios2.default.get('/api/user/' + this.props.params.user_id, this.setHeader()).then(function (response) {
 					console.log(response);
-					this.setState(response.data);
+					if (response.data.length > 0) {
+						this.setState(response.data[0]);
+						if (response.data[1] !== null) {
+							this.setState({
+								follow: true
+							});
+						}
+					} else {
+						this.setState(response.data);
+					}
+				}.bind(this)).catch(function (err) {
+					console.log(err);
+				});
+			}
+		}, {
+			key: 'toggleFollowButton',
+			value: function toggleFollowButton() {
+				_axios2.default.post('/api/userfollow', {
+					following_id: this.props.params.user_id
+				}, this.setHeader()).then(function (response) {
+					console.log(response);
+					this.setState({
+						follow: response.data.follow
+					});
 				}.bind(this)).catch(function (err) {
 					console.log(err);
 				});
@@ -28935,10 +29010,14 @@
 				return _react2.default.createElement(
 					'div',
 					null,
-					this.state.match && _react2.default.createElement(
-						'a',
+					this.state.match ? _react2.default.createElement(
+						_reactRouter.Link,
 						{ href: '/update/' + this.state._id },
 						'Update Profile'
+					) : _Auth2.default.isUserAuthenticated() && _react2.default.createElement(
+						'button',
+						{ onClick: this.toggleFollowButton },
+						this.state.follow ? 'Unfollow' : 'Follow'
 					),
 					_react2.default.createElement(
 						'h1',
@@ -28998,7 +29077,7 @@
 	exports.default = Profile;
 
 /***/ },
-/* 271 */
+/* 272 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -29207,7 +29286,7 @@
 	exports.default = Profile;
 
 /***/ },
-/* 272 */
+/* 273 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';

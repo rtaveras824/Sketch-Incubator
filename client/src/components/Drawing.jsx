@@ -44,8 +44,6 @@ class Drawing extends React.Component {
 				});
 			}
 
-			console.log(response.data[1].like);
-
 			this.setState({
 				drawing: response.data[0]
 			});

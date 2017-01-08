@@ -21,6 +21,10 @@ function setColor(color) {
 	}
 }
 
+function getColors() {
+	return [r, g, b];
+}
+
 function setSwatch(e) {
 	var swatch = e.target;
 	console.log(swatch.style.backgroundColor);

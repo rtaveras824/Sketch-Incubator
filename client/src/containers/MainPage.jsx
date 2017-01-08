@@ -5,6 +5,8 @@ import Auth from '../../../modules/Auth';
 import Body from '../components/Body.jsx';
 import Menu from '../components/Menu.jsx';
 
+console.log(Auth);
+
 class MainPage extends React.Component {
 	constructor(props) {
 		super(props);

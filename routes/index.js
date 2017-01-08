@@ -2,6 +2,7 @@ import Base from '../client/src/components/Base.jsx';
 import MainPage from '../client/src/containers/MainPage.jsx';
 import LoginPage from '../client/src/containers/LoginPage.jsx';
 import SignUpPage from '../client/src/containers/SignUpPage.jsx';
+import ApplicationPage from '../client/src/containers/ApplicationPage.jsx';
 import Category from '../client/src/components/Category.jsx';
 import Drawing from '../client/src/components/Drawing.jsx';
 import Profile from '../client/src/components/Profile.jsx';
@@ -55,6 +56,10 @@ const routes = {
 		{
 			path: '/update/:user_id',
 			component: Update
+		},
+		{
+			path: '/application/draw',
+			component: ApplicationPage
 		},
 		{
 			path: '*',

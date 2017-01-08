@@ -14,6 +14,7 @@ if (process.env.production) {
 	mongoUrl = 'mongodb://localhost/authTest';
 }
 mongoose.connect(mongoUrl);
+mongoose.Promise = global.Promise;
 mongoose.connection.on('error', (err) => {
 	console.log('Mongoose error', err);
 });
@@ -27,8 +28,8 @@ app.use(express.static('./server/static'));
 // this is where webpack outputs react app
 app.use(express.static('./client/dist'));
 
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
+app.use(bodyParser.json({limit: '50mb'}));
+app.use(bodyParser.urlencoded({ limit: '50mb', extended: false }));
 
 app.use(passport.initialize());
 
@@ -39,12 +40,15 @@ passport.use('local-signup', localSignupStrategy);
 
 const authRoutes = require('./routes/auth');
 const apiRoutes = require('./routes/api');
+const applicationRoutes = require('./routes/application');
 const authCheckMiddleware = require('./middleware/auth-check');
 
 app.use('/api', authCheckMiddleware);
 
 app.use('/auth', authRoutes);
 app.use('/api', apiRoutes);
+
+app.get('/application', applicationRoutes);
 
 app.get('*', function(req, res) {
 	res.sendFile(path.resolve(__dirname, 'server/static', 'index.html'));
