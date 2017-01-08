@@ -51,6 +51,12 @@ const UserSchema = new Schema({
 		default: false
 	},
 	photo_url: String,
+	portfolio_url: String,
+	artstation_url: String,
+	behance_url: String,
+	dribbble_url: String,
+	deviantart_url: String,
+	linkedin_url: String,
 	created: {
 		type: Date,
 		default: Date.now

@@ -3,10 +3,53 @@ const router = new express.Router;
 
 const mongoose = require('mongoose');
 const ObjectId = mongoose.Types.ObjectId;
+const User = mongoose.model('User');
 const Drawing = mongoose.model('Drawing');
 const Category = mongoose.model('Category');
 const UserDrawing = mongoose.model('UserDrawing');
 const UserFollow = mongoose.model('UserFollow');
+
+router.get('/user/:user_id', function(req, res, next) {
+	return User.findById(req.params.user_id)
+		.lean()
+		.select('display_name address email photo_url portfolio_url artstation_url behance_url dribbble_url deviantart_url linkedin_url')
+		.exec(function(err, result) {
+			if (req.params.user_id === req.user_id) {
+				result.match = true;
+			} else {
+				result.match = false;
+			}
+			console.log(JSON.stringify(result));
+			res.json(result);
+		});
+})
+
+router.get('/update/:user_id', function(req, res, next) {
+	if (req.params.user_id !== req.user_id) {
+		console.log('NOPE');
+		res.end();
+	} else {
+		return User.findById(req.params.user_id)
+		.select('display_name address email photo_url portfolio_url artstation_url behance_url dribbble_url deviantart_url linkedin_url')
+		.exec(function(err, result) {
+			console.log(JSON.stringify(result));
+			res.json(result);
+		});
+	}
+});
+
+router.post('/update', function(req, res, next) {
+	if (req.body._id !== req.user_id) {
+		console.log('NOPE');
+		res.end();
+	} else {
+		return User.findByIdAndUpdate(req.body._id, { $set: req.body })
+		.exec(function(err, result) {
+			console.log(JSON.stringify(result));
+			res.json(result);
+		});
+	}
+});
 
 router.get('/drawings', function(req, res, next) {
 	console.log('drawing');

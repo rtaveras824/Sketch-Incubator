@@ -5,6 +5,7 @@ import SignUpPage from '../client/src/containers/SignUpPage.jsx';
 import Category from '../client/src/components/Category.jsx';
 import Drawing from '../client/src/components/Drawing.jsx';
 import Profile from '../client/src/components/Profile.jsx';
+import Update from '../client/src/components/Update.jsx';
 import NotFound from '../client/src/components/NotFound.jsx';
 
 import Auth from '../modules/Auth';
@@ -50,6 +51,10 @@ const routes = {
 		{
 			path: '/profile/:user_id',
 			component: Profile
+		},
+		{
+			path: '/update/:user_id',
+			component: Update
 		},
 		{
 			path: '*',
