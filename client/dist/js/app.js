@@ -26404,6 +26404,10 @@
 
 	var _LoginPage2 = _interopRequireDefault(_LoginPage);
 
+	var _SignUpPage = __webpack_require__(270);
+
+	var _SignUpPage2 = _interopRequireDefault(_SignUpPage);
+
 	var _Category = __webpack_require__(265);
 
 	var _Category2 = _interopRequireDefault(_Category);
@@ -26411,6 +26415,10 @@
 	var _Drawing = __webpack_require__(266);
 
 	var _Drawing2 = _interopRequireDefault(_Drawing);
+
+	var _Profile = __webpack_require__(269);
+
+	var _Profile2 = _interopRequireDefault(_Profile);
 
 	var _NotFound = __webpack_require__(267);
 
@@ -26438,11 +26446,24 @@
 			path: '/login',
 			component: _LoginPage2.default
 		}, {
+			path: '/signup',
+			component: _SignUpPage2.default
+		}, {
+			path: '/logout',
+			onEnter: function onEnter(nextState, replace) {
+				_Auth2.default.deauthenticateUser();
+
+				replace('/');
+			}
+		}, {
 			path: '/category/:category_id',
 			component: _Category2.default
 		}, {
 			path: '/drawing/:drawing_id',
 			component: _Drawing2.default
+		}, {
+			path: '/profile/:user_id',
+			component: _Profile2.default
 		}, {
 			path: '*',
 			component: _NotFound2.default
@@ -28109,6 +28130,11 @@
 			value: function getToken() {
 				return localStorage.getItem('token');
 			}
+		}, {
+			key: 'deauthenticateUser',
+			value: function deauthenticateUser() {
+				localStorage.removeItem('token');
+			}
 		}]);
 
 		return Auth;
@@ -28645,7 +28671,7 @@
 				null,
 				_react2.default.createElement(
 					_reactRouter.Link,
-					{ to: '/category/5863f68da5a1ac0ecc852112' },
+					{ to: '/category/5863f68da5a1ac0ecc852111' },
 					'People'
 				),
 				_react2.default.createElement(
@@ -28688,6 +28714,205 @@
 	};
 
 	exports.default = Menu;
+
+/***/ },
+/* 269 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var Profile = function (_React$Component) {
+		_inherits(Profile, _React$Component);
+
+		function Profile(props) {
+			_classCallCheck(this, Profile);
+
+			return _possibleConstructorReturn(this, (Profile.__proto__ || Object.getPrototypeOf(Profile)).call(this, props));
+		}
+
+		_createClass(Profile, [{
+			key: 'render',
+			value: function render() {
+				return _react2.default.createElement(
+					'div',
+					null,
+					this.props.params.user_id
+				);
+			}
+		}]);
+
+		return Profile;
+	}(_react2.default.Component);
+
+	exports.default = Profile;
+
+/***/ },
+/* 270 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _reactRouter = __webpack_require__(178);
+
+	var _Auth = __webpack_require__(261);
+
+	var _Auth2 = _interopRequireDefault(_Auth);
+
+	var _axios = __webpack_require__(236);
+
+	var _axios2 = _interopRequireDefault(_axios);
+
+	var _SignUpForm = __webpack_require__(271);
+
+	var _SignUpForm2 = _interopRequireDefault(_SignUpForm);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var SignUpPage = function (_React$Component) {
+		_inherits(SignUpPage, _React$Component);
+
+		function SignUpPage(props) {
+			_classCallCheck(this, SignUpPage);
+
+			var _this = _possibleConstructorReturn(this, (SignUpPage.__proto__ || Object.getPrototypeOf(SignUpPage)).call(this, props));
+
+			_this.state = {
+				user: {
+					email: '',
+					display_name: '',
+					password: ''
+				}
+			};
+
+			_this.processForm = _this.processForm.bind(_this);
+			_this.changeUser = _this.changeUser.bind(_this);
+			return _this;
+		}
+
+		_createClass(SignUpPage, [{
+			key: 'changeUser',
+			value: function changeUser(event) {
+				var field = event.target.name;
+				var user = this.state.user;
+				user[field] = event.target.value;
+
+				this.setState({
+					user: user
+				});
+			}
+		}, {
+			key: 'processForm',
+			value: function processForm(event) {
+				event.preventDefault();
+
+				var display_name = this.state.user.display_name;
+				var email = this.state.user.email;
+				var password = this.state.user.password;
+
+				_axios2.default.post('/auth/signup', {
+					display_name: display_name,
+					email: email,
+					password: password
+				}).then(function (response) {
+					console.log(response.data);
+					_Auth2.default.authenticateUser(response.data.token);
+					_reactRouter.browserHistory.push('/');
+				}).catch(function (err) {
+					console.log(err);
+				});
+			}
+		}, {
+			key: 'render',
+			value: function render() {
+				return _react2.default.createElement(_SignUpForm2.default, {
+					onSubmit: this.processForm,
+					onChange: this.changeUser,
+					user: this.state.user
+				});
+			}
+		}]);
+
+		return SignUpPage;
+	}(_react2.default.Component);
+
+	exports.default = SignUpPage;
+
+/***/ },
+/* 271 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _reactRouter = __webpack_require__(178);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var SignUpForm = function SignUpForm(_ref) {
+		var onSubmit = _ref.onSubmit,
+		    onChange = _ref.onChange,
+		    user = _ref.user;
+		return _react2.default.createElement(
+			'div',
+			null,
+			_react2.default.createElement(
+				'form',
+				{ action: '/', onSubmit: onSubmit },
+				_react2.default.createElement(
+					'h2',
+					null,
+					'Sign Up'
+				),
+				_react2.default.createElement('input', { type: 'text', name: 'display_name', onChange: onChange }),
+				_react2.default.createElement('input', { type: 'text', name: 'email', onChange: onChange }),
+				_react2.default.createElement('input', { type: 'password', name: 'password', onChange: onChange }),
+				_react2.default.createElement('input', { type: 'submit', value: 'submit' })
+			)
+		);
+	};
+
+	exports.default = SignUpForm;
 
 /***/ }
 /******/ ]);

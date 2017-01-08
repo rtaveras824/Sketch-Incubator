@@ -16,6 +16,10 @@ class Auth {
 	static getToken() {
 		return localStorage.getItem('token');
 	}
+
+	static deauthenticateUser() {
+		localStorage.removeItem('token');
+	}
 };
 
 export default Auth;

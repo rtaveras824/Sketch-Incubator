@@ -33,7 +33,9 @@ app.use(bodyParser.json());
 app.use(passport.initialize());
 
 const localLoginStrategy = require('./passport/local-login');
+const localSignupStrategy = require('./passport/local-signup');
 passport.use('local-login', localLoginStrategy);
+passport.use('local-signup', localSignupStrategy);
 
 const authRoutes = require('./routes/auth');
 const apiRoutes = require('./routes/api');

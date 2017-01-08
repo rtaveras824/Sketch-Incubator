@@ -40,7 +40,7 @@ const UserSchema = new Schema({
 	},
 	approved: {
 		type: Boolean,
-		default: false
+		default: true
 	},
 	banned: {
 		type: Boolean,
@@ -64,6 +64,26 @@ const UserSchema = new Schema({
 UserSchema.methods.comparePassword = function comparePassword(password, callback) {
 	bcryptjs.compare(password, this.password, callback);
 };
+
+UserSchema.pre('save', function saveHook(next) {
+	const user = this;
+
+	// proceed further only if the password is modified or the user is new
+	if (!user.isModified('password')) return next();
+
+	return bcryptjs.genSalt((saltError, salt) => {
+		if (saltError) { return next(saltError); }
+
+		return bcryptjs.hash(user.password, salt, (hashError, hash) => {
+			if (hashError) { return next(hashError); }
+
+			// replace a password string with hash value
+			user.password = hash;
+
+			return next();
+		});
+	});
+});
 
 const User = mongoose.model('User', UserSchema);
 
