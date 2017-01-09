@@ -9,7 +9,10 @@ const eraseBtn = document.getElementById('erase');
 const pencilBtn = document.getElementById('pencil');
 const recordSketchBtn = document.getElementById('record_sketch');
 const recordWalkthruBtn = document.getElementById('record_walkthru');
-const replayBtn = document.getElementById('replay');
+const undoBtn = document.getElementById('undo_btn');
+const redoBtn = document.getElementById('redo_btn');
+const replayBtn = document.getElementById('replay_btn');
+const stepBtn = document.getElementById('step_btn');
 
 var pressure,
 	setRadius,
@@ -23,12 +26,15 @@ var pressure,
 	type,
 	sketchRecordState,
 	walkthruRecordState,
-	dataURL,
+	steppin,
+	stepCounter,
+	sketchDataURL,
+	walkthruDataURL,
 	points = [],
 	sketchStrokes = [],
-	strokes= [],
+	walkthruStrokes = [],
+	strokes = [],
 	redoStrokes = [];
-
 
 var _points = new Array(),
 	_strokeID = 0;
@@ -48,6 +54,7 @@ function init() {
 	isDown = false,
 	sketchRecordState = false,
 	walkthruRecordState = false;
+	stepCounter = 0;
 
 	canvas.width = window.innerWidth;
 	canvas.height = window.innerHeight;
@@ -72,22 +79,38 @@ function init() {
 		recordWalkthru(e);
 	});
 
+	undoBtn.addEventListener('click', function(e) {
+		undo(e);
+	});
+
+	redoBtn.addEventListener('click', function(e) {
+		redo(e);
+	});
+
+	stepBtn.addEventListener('click', function(e) {
+		stepByStep(e);
+	});
+
 	replayBtn.addEventListener('click', function(e) {
-		context.clearRect(0, 0, canvas.width, canvas.height);
+		reset();
 		redraw(strokes, 0);
 	})
 
 	canvas.addEventListener('mousedown', function(e) {
 		mouseDownEvent(e);
 	});
+
 	canvas.addEventListener('mouseup', function(e) {
 		mouseUpEvent(e);
 	});
+
 	canvas.addEventListener('mousemove', function(e) {
 		mouseDragEvent(e);
 	});
+
 	canvas.addEventListener('pointermove', function(e) {
 		if (isDown) {
+			pressure = e.pressure;
 			setContextStyle(r, g, b, e.pressure, type);
 		}
 		
@@ -166,13 +189,21 @@ function mouseUpEvent(e) {
 	setXY(e);
 
 	if(e.button <= 1) {
-		points = [];
-		isDown = false;
-		context.beginPath();
-
 		if (sketchRecordState) {
 			sketchStrokes.push(new Stroke(points, type, [r, g, b], setRadius));
+		} else if (walkthruRecordState) {
+			walkthruStrokes.push(new Stroke(points, type, [r, g, b], setRadius));
 		}
+
+		strokes.push(new Stroke(points, type, [r, g, b], setRadius));
+		points = [];
+
+		if(steppin) {
+			redraw(walkthruStrokes, stepCounter);
+		}
+
+		isDown = false;
+		context.beginPath();
 	}	
 }
 
@@ -187,7 +218,7 @@ function redraw(strokes, j) {
 	var strokeDraw = window.setInterval(function() {
 		var point = points[i];
 		console.log(stroke.type);
-
+		//context.beginPath();
 		drawPoint(point.X, point.Y, point.Pressure, stroke.type, stroke.color);
 		i++;
 		if (i >= points.length) {
@@ -195,15 +226,25 @@ function redraw(strokes, j) {
 			clearInterval(strokeDraw);
 			i = 0;
 			j++;
-			if (j < strokes.length) {
-				redraw(strokes, j);
+			if (!steppin) {
+				if (j < strokes.length) {
+					redraw(strokes, j);
+				}
+			} else {
+				if (j > strokes.length) {
+					steppin = false;
+					stepCounter = 0;
+				} else {
+					stepCounter++;
+				}
 			}
 		}
 	}, 5);
 }
 
 function putPoint(e, X, Y) {
-	if(isDown) {		context.lineTo(X, Y);
+	if(isDown) {
+		context.lineTo(X, Y);
 		context.stroke();
 		context.beginPath();
 		context.arc(X, Y, radius, 0, Math.PI * 2);
@@ -223,35 +264,82 @@ function redrawPutPoint(X, Y) {
 	context.moveTo(X, Y);
 }
 
+function setSketchBackground() {
+	var imageObj = new Image();
+	imageObj.onload = function() {
+		context.save();
+		context.globalAlpha = 0.5;
+		context.drawImage(imageObj, 0, 0);
+		context.restore();
+	}
+
+	imageObj.src = sketchDataURL;
+}
+
 function recordSketch(e) {
 	var buttonText = recordSketchBtn.innerHTML;
 
 	if (buttonText === 'Record Sketch') {
 		reset();
+		sketchDataURL = '';
 		sketchStrokes = [];
 		e.target.innerHTML = 'Save Sketch';
 		sketchRecordState = true;
 	} else {
-		dataURL = canvas.toDataURL();
+		sketchDataURL = canvas.toDataURL();
 		reset();
-
-		var imageObj = new Image();
-		imageObj.onload = function() {
-			context.save();
-			context.globalAlpha = 0.5;
-			context.drawImage(imageObj, 0, 0);
-			context.restore();
-		}
-		imageObj.src = dataURL;
-
-
+		setSketchBackground();
+		
 		e.target.innerHTML = 'Record Sketch';
 		sketchRecordState = false;
 	}
 }
 
 function recordWalkthru(e) {
+	var buttonText = recordWalkthruBtn.innerHTML;
 
+	if (buttonText === 'Record Walkthru') {
+		reset();
+		setSketchBackground();
+		walkthruDataURL = '';
+		strokes = [];
+		e.target.innerHTML = 'Save Walkthru';
+		walkthruRecordState = true;
+	} else {
+		walkthruDataURL = canvas.toDataURL();
+
+		e.target.innerHTML = 'Record Walkthru';
+		walkthruRecordState = false;
+	}
+}
+
+function quickDrawStrokes() {
+	for(var i = 0; i < strokes.length; i++) {
+		context.beginPath();
+		for(var j = 0; j < strokes[i].points.length; j++) {
+			var point = strokes[i].points[j];
+			drawPoint(point.X, point.Y, point.Pressure, strokes[i].type, strokes[i].color);
+		}
+	}
+}
+
+function redo(e) {
+	var firstRedoStroke = redoStrokes.pop();
+	strokes.push(firstRedoStroke);
+
+	reset();
+
+	quickDrawStrokes();
+}
+
+function undo(e) {
+	var lastStroke = strokes.pop();
+	redoStrokes.push(lastStroke);
+	console.log(strokes);
+
+	reset();
+
+	quickDrawStrokes();
 }
 
 function reset() {
@@ -278,6 +366,13 @@ function setContextStyle(r, g, b, pressure, type) {
 function setXY(e) {
 	x = e.clientX;
 	y = e.clientY;
+}
+
+function stepByStep(e) {
+	reset();
+	steppin = true;
+	
+	redraw(walkthruStrokes, stepCounter);
 }
 
 init();

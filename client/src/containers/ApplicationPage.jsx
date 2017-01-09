@@ -13,9 +13,12 @@ class ApplicationPage extends React.Component {
 				<canvas id="canvas"></canvas>
 				<button id="erase">Erase</button>
 				<button id="pencil">Pencil</button>
+				<button id="undo_btn">Undo</button>
+				<button id="redo_btn">Redo</button>
 				<button id="record_sketch">Record Sketch</button>
 				<button id="record_walkthru">Record Walkthru</button>
-				<button id="replay">Replay</button>
+				<button id="replay_btn">Replay</button>
+				<button id="step_btn">Step By Step</button>
 
 				<form action="/" onSubmit={ this.onSubmit }>
 					<input type="text" name="title" />

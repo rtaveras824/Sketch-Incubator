@@ -28666,6 +28666,16 @@
 					),
 					_react2.default.createElement(
 						"button",
+						{ id: "undo_btn" },
+						"Undo"
+					),
+					_react2.default.createElement(
+						"button",
+						{ id: "redo_btn" },
+						"Redo"
+					),
+					_react2.default.createElement(
+						"button",
 						{ id: "record_sketch" },
 						"Record Sketch"
 					),
@@ -28676,8 +28686,13 @@
 					),
 					_react2.default.createElement(
 						"button",
-						{ id: "replay" },
+						{ id: "replay_btn" },
 						"Replay"
+					),
+					_react2.default.createElement(
+						"button",
+						{ id: "step_btn" },
+						"Step By Step"
 					),
 					_react2.default.createElement(
 						"form",
