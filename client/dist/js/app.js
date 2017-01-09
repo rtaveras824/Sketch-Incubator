@@ -28666,9 +28666,27 @@
 					),
 					_react2.default.createElement(
 						"button",
+						{ id: "record_sketch" },
+						"Record Sketch"
+					),
+					_react2.default.createElement(
+						"button",
+						{ id: "record_walkthru" },
+						"Record Walkthru"
+					),
+					_react2.default.createElement(
+						"button",
 						{ id: "replay" },
 						"Replay"
-					)
+					),
+					_react2.default.createElement(
+						"form",
+						{ action: "/", onSubmit: this.onSubmit },
+						_react2.default.createElement("input", { type: "text", name: "title" }),
+						_react2.default.createElement("input", { id: "drawing_input", type: "hidden", name: "drawing" }),
+						_react2.default.createElement("input", { type: "submit", value: "Submit" })
+					),
+					_react2.default.createElement("img", { id: "canvas_img" })
 				);
 			}
 		}]);
