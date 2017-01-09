@@ -28650,7 +28650,26 @@
 		_createClass(ApplicationPage, [{
 			key: "render",
 			value: function render() {
-				return _react2.default.createElement("canvas", { id: "canvas" });
+				return _react2.default.createElement(
+					"div",
+					null,
+					_react2.default.createElement("canvas", { id: "canvas" }),
+					_react2.default.createElement(
+						"button",
+						{ id: "erase" },
+						"Erase"
+					),
+					_react2.default.createElement(
+						"button",
+						{ id: "pencil" },
+						"Pencil"
+					),
+					_react2.default.createElement(
+						"button",
+						{ id: "replay" },
+						"Replay"
+					)
+				);
 			}
 		}]);
 

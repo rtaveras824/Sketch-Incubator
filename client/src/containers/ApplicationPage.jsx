@@ -9,7 +9,12 @@ class ApplicationPage extends React.Component {
 
 	render() {
 		return (
-			<canvas id="canvas"></canvas>
+			<div>
+				<canvas id="canvas"></canvas>
+				<button id="erase">Erase</button>
+				<button id="pencil">Pencil</button>
+				<button id="replay">Replay</button>
+			</div>
 		)
 	}
 }

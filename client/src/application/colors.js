@@ -1,8 +1,8 @@
 class Colors {
 	constructor() {
-		this.r = 0;
-		this.g = 0;
-		this.b = 0;
+		this.r = 120;
+		this.g = 80;
+		this.b = 180;
 	}
 
 	getColors() {
