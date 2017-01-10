@@ -9,7 +9,8 @@
 	<div id="react-app"></div>
 
 	<script src="/js/app.js"></script>
-	<script type="text/javascript">
+	<script src="/js/main.js"></script>
+	<!-- <script type="text/javascript">
 
 	function loadScript(url, callback)
 	{
@@ -22,22 +23,22 @@
 	    // Then bind the event to the callback function.
 	    // There are several events for cross browser compatibility.
 	    script.onreadystatechange = callback;
-	    script.onload = callback;
+	    script.onload = console.log('third');
 
 	    // Fire the loading
 	    head.appendChild(script);
 	}
 
 	function myPrettyCode() {
-		
+		console.log('second');
 	}
 
-	if(window.location.pathname == "/application/draw") {
+	if(window.location.pathname == "/application/draw" || 
+		window.location.pathname.match('^/drawing')) {
 		loadScript('/js/main.js', myPrettyCode);
 	}
 	
-
-	</script>
+	</script> -->
 
 </body>
 </html>

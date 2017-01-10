@@ -106,17 +106,6 @@ router.post('/userfollow', function(req, res, next) {
 	})
 });
 
-router.get('/drawings', function(req, res, next) {
-	console.log('drawing');
-	return Drawing.find({})
-		.limit(10)
-		.populate('author category')
-		.exec(function(err, result) {
-			if (err) return err;
-			res.json(result);
-		});
-});
-
 // router.get('/menu', function(req, res, next) {
 // 	const sortedMenu = [];
 // 	function recursiveFunction(categories) {
@@ -156,6 +145,16 @@ router.get('/drawings', function(req, res, next) {
 // 			recursiveFunction(categories);
 // 		});
 // });
+
+router.get('/categories', function(req, res, next) {
+	return Category.find({})
+			.then(function(response) {
+				res.send(response);
+			})
+			.catch(function(err) {
+				console.log(err);
+			});
+})
 
 router.get('/category/:category_id', function(req, res, next) {
 	return Category.find({
@@ -205,6 +204,17 @@ router.get('/category/:category_id', function(req, res, next) {
 	// 	console.log('success');
 	// 	res.send(docs);
 	// });
+});
+
+router.get('/drawings', function(req, res, next) {
+	console.log('drawing');
+	return Drawing.find({})
+		.limit(10)
+		.populate('author category')
+		.exec(function(err, result) {
+			if (err) return err;
+			res.json(result);
+		});
 });
 
 router.get('/drawing/:drawing_id', function(req, res, next) {
@@ -303,6 +313,24 @@ router.post('/drawing/userfavorite', function(req, res, next) {
 				res.send(newEntry);
 			})
 		}
+	})
+});
+
+router.get('/:drawing_id', function(req, res, next) {
+
+});
+
+router.post('/upload', function(req, res, next) {
+	var newDrawing = new Drawing({
+		title: req.body.title,
+		author: req.user_id,
+		drawing: req.body.drawing,
+		category: req.body.category
+	});
+	newDrawing.save(function(err, newEntry) {
+		if (err) return err;
+
+		res.send(newEntry);
 	})
 });
 

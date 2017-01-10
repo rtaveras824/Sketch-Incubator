@@ -3,16 +3,43 @@ import { Point, PointCloud, Result, PDollarRecognizer } from './pdollar.js';
 
 const Colors = new colors();
 
-const canvas = document.getElementById('canvas');
-const context = canvas.getContext('2d');
-const eraseBtn = document.getElementById('erase');
-const pencilBtn = document.getElementById('pencil');
-const recordSketchBtn = document.getElementById('record_sketch');
-const recordWalkthruBtn = document.getElementById('record_walkthru');
-const undoBtn = document.getElementById('undo_btn');
-const redoBtn = document.getElementById('redo_btn');
-const replayBtn = document.getElementById('replay_btn');
-const stepBtn = document.getElementById('step_btn');
+var doubleCanvasSupport = (document.getElementsByTagName('canvas').length > 1) ? true : false;
+console.log('double canvas', doubleCanvasSupport);
+
+var currentCanvas,
+	currentContext;
+
+var canvas1 = document.getElementById('canvas'),
+	context1 = canvas1.getContext('2d');
+
+
+var eraseBtn = document.getElementById('erase'),
+	pencilBtn = document.getElementById('pencil'),
+	undoBtn = document.getElementById('undo_btn'),
+	redoBtn = document.getElementById('redo_btn'),
+	playWalkthruBtn = document.getElementById('play_walkthru'),
+	stepWalkthruBtn = document.getElementById('step_walkthru');
+
+/************* DOUBLE CANVAS SUPPORT *****************/
+if (!doubleCanvasSupport) {
+	console.log('test');
+
+	currentCanvas = canvas1;
+	currentContext = context1;
+
+	var recordSketchBtn = document.getElementById('record_sketch'),
+		recordWalkthruBtn = document.getElementById('record_walkthru');
+} else {
+	var canvas2 = document.getElementById('canvas2'),
+		context2 = canvas2.getContext('2d');
+
+		currentCanvas = canvas2;
+		currentContext = context2;
+
+	var playSketchBtn = document.getElementById('play_sketch'),
+		userSetSketchBtn = document.getElementById('user_set_sketch'),
+		clearSketch = document.getElementById('clear_sketch');
+}
 
 var pressure,
 	setRadius,
@@ -30,18 +57,25 @@ var pressure,
 	stepCounter,
 	sketchDataURL,
 	walkthruDataURL,
+	userSketchDataURL,
 	points = [],
 	sketchStrokes = [],
 	walkthruStrokes = [],
 	strokes = [],
-	redoStrokes = [];
+	redoStrokes = [],
+	drawing,
+	leftBoundX,
+	rightBoundX,
+	topBoundY,
+	bottomBoundY;
 
 var _points = new Array(),
 	_strokeID = 0;
 
 const _r = new PDollarRecognizer();
 
-function init() {
+function init(data) {
+	console.log('test2');
 	pressure = 0.5,
 	setRadius = 10,
 	radius = setRadius * pressure;
@@ -51,17 +85,39 @@ function init() {
 	g = Colors.getColors()[1],
 	b = Colors.getColors()[2];
 
+	
 	isDown = false,
 	sketchRecordState = false,
 	walkthruRecordState = false;
 	stepCounter = 0;
 
-	canvas.width = window.innerWidth;
-	canvas.height = window.innerHeight;
+	setContextStyle(r, g, b, pressure, type, currentContext);
 
-	context.lineWidth = radius * 2;
-	context.fillStyle = "rgba(" + r + ", " + g + ", " + b + ", " + pressure + ")";
-	context.strokeStyle = "rgba(" + r + ", " + g + ", " + b + ", " + pressure + ")";
+	/*************** DOUBLE CANVAS SUPPORT *********************/
+	if (doubleCanvasSupport) {
+		var halfWidth = window.innerWidth / 2,
+			height = window.innerHeight;
+
+		canvas.width = halfWidth;
+		canvas.height = height;
+		canvas2.width = halfWidth;
+		canvas2.height = height;
+
+		setContextStyle(r, g, b, pressure, type, context1);
+	} else {
+		canvas.width = window.innerWidth;
+		canvas.height = window.innerHeight;
+	}
+
+	leftBoundX = canvas.width / 2;
+	rightBoundX = canvas.width / 2;
+	topBoundY = canvas.height / 2;
+	bottomBoundY = canvas.height / 2;
+
+
+	// currentContext.lineWidth = radius * 2;
+	// currentContext.fillStyle = "rgba(" + r + ", " + g + ", " + b + ", " + pressure + ")";
+	// currentContext.strokeStyle = "rgba(" + r + ", " + g + ", " + b + ", " + pressure + ")";
 
 	pencilBtn.addEventListener('click', function(e) {
 		type = 'pencil';
@@ -69,14 +125,6 @@ function init() {
 
 	eraseBtn.addEventListener('click', function(e) {
 		type = 'eraser';
-	});
-
-	recordSketchBtn.addEventListener('click', function(e) {
-		recordSketch(e);
-	});
-
-	recordWalkthruBtn.addEventListener('click', function(e) {
-		recordWalkthru(e);
 	});
 
 	undoBtn.addEventListener('click', function(e) {
@@ -87,38 +135,70 @@ function init() {
 		redo(e);
 	});
 
-	stepBtn.addEventListener('click', function(e) {
-		stepByStep(e);
+	stepWalkthruBtn.addEventListener('click', function(e) {
+		reset(context1);
+		steppin = true;
+
+		if(doubleCanvasSupport) {
+			setSketchBackground(sketchDataURL, context1);
+		}
+		
+		redraw(walkthruStrokes, stepCounter);
 	});
 
-	replayBtn.addEventListener('click', function(e) {
-		reset();
-		redraw(strokes, 0);
-	})
+	playWalkthruBtn.addEventListener('click', function(e) {
+		reset(context1);
 
-	canvas.addEventListener('mousedown', function(e) {
+		if(doubleCanvasSupport) {
+			setSketchBackground(sketchDataURL, context1);
+		}
+
+		redraw(walkthruStrokes, 0);	
+	});
+
+	/**************** DOUBLE CANVAS SUPPORT ******************/
+	if (!doubleCanvasSupport) {
+		recordSketchBtn.addEventListener('click', function(e) {
+			recordSketch(e);
+		});
+
+		recordWalkthruBtn.addEventListener('click', function(e) {
+			recordWalkthru(e);
+		});
+	} else {
+		playSketchBtn.addEventListener('click', function(e) {
+			console.log('playsketch');
+			reset(context1);
+			redraw(sketchStrokes, 0);
+		});
+
+		userSetSketchBtn.addEventListener('click', function(e){
+			userSetSketch(e);
+		});
+	}
+
+	currentCanvas.addEventListener('mousedown', function(e) {
 		mouseDownEvent(e);
 	});
 
-	canvas.addEventListener('mouseup', function(e) {
+	currentCanvas.addEventListener('mouseup', function(e) {
 		mouseUpEvent(e);
 	});
 
-	canvas.addEventListener('mousemove', function(e) {
+	currentCanvas.addEventListener('mousemove', function(e) {
 		mouseDragEvent(e);
 	});
 
-	canvas.addEventListener('pointermove', function(e) {
+	currentCanvas.addEventListener('pointermove', function(e) {
 		if (isDown) {
 			pressure = e.pressure;
-			setContextStyle(r, g, b, e.pressure, type);
+			setContextStyle(r, g, b, e.pressure, type, currentContext);
 		}
-		
 	});
 }
 
-function IndividualPoint(stroke_id, x, y, pressure) {
-	this.ID = stroke_id;
+function IndividualPoint(strokeId, x, y, pressure) {
+	this.ID = strokeId;
 	this.X = x;
 	this.Y = y;
 	this.pressure = pressure;
@@ -131,38 +211,69 @@ function Stroke(points, type, color, radius) {
 	this.radius = radius;
 }
 
-function Drawing(strokes, canvasWidth, canvasHeight) {
-	this.sketch_strokes = sketch_strokes;
-	this.sketch_img = sketch_img;
-	this.strokes = strokes;
+function Drawing(sketchStrokes, sketchImg, walkthruStrokes, walkthruImg, canvasWidth, canvasHeight) {
+	this.sketchStrokes = sketchStrokes;
+	this.sketchImg = sketchImg;
+	this.walkthruStrokes = walkthruStrokes;
+	this.walkthruImg = walkthruImg;
 	this.canvasWidth = canvasWidth;
 	this.canvasHeight = canvasHeight;
 
-	ths.saveObject = function() {
+	this.saveObject = function() {
 		return {
-			sketch_strokes: this.sketch_strokes,
-			sketch_img: this.sketch_img,
-			strokes: this.strokes,
+			sketchStrokes: this.sketchStrokes,
+			sketchImg: this.sketchImg,
+			walkthruStrokes: this.walkthruStrokes,
+			walkthruImg: this.walkthruImg,
 			canvasWidth: this.canvasWidth,
 			canvasHeight: this.canvasHeight,
 		}
 	}
 }
 
-function erase() {
+function checkBounds() {
+	if (x < leftBoundX) {
+		leftBoundX = x;
+	} else if (x > rightBoundX) {
+		rightBoundX = x;
+	}
+
+	if (y < topBoundY) {
+		topBoundY = y;
+	} else if (y > bottomBoundY) {
+		bottomBoundY = y;
+	}
+}
+
+function erase(context) {
+	if (context === context1) {
+		context = context1;
+	} else if (context === context2) {
+		context = context2;
+	} else {
+		context = currentContext;
+	}
+
 	context.strokeStyle = "rgb(255, 255, 255)";
     context.globalCompositeOperation = "destination-out";  
     context.strokeStyle = ("rgb(255,255,255,255)");
 }
 
-function pencil(r, g, b, pressure) {
+function pencil(r, g, b, pressure, context) {
+	if (context === context1) {
+		context = context1;
+	} else if (context === context2) {
+		context = context2;
+	} else {
+		context = currentContext;
+	}
+
 	context.globalCompositeOperation = 'source-over';
 	context.strokeStyle = "rgba(" + r + ", " + g + ", " + b + ", " + pressure + ")";
 }
 
 function drawPoint(x, y, pressure, type, color) {
-	console.log(type);
-	setContextStyle(color[0], color[1], color[2], pressure, type);
+	setContextStyle(color[0], color[1], color[2], pressure, type, context1);
 	redrawPutPoint(x, y);
 }
 
@@ -171,6 +282,7 @@ function mouseDownEvent(e) {
 
 	if(e.button <= 1) {
 		isDown = true;
+		checkBounds();
 		points.push(new IndividualPoint(++_strokeID, x, y, pressure));
 		putPoint(e, x, y);
 	}
@@ -180,6 +292,8 @@ function mouseDragEvent(e) {
 	setXY(e);
 
 	if(isDown) {
+		checkBounds();
+		console.log('bounds', leftBoundX, rightBoundX, topBoundY, bottomBoundY);
 		points.push(new IndividualPoint(_strokeID, x, y, pressure));
 		putPoint(e, x, y);
 	}
@@ -189,13 +303,16 @@ function mouseUpEvent(e) {
 	setXY(e);
 
 	if(e.button <= 1) {
-		if (sketchRecordState) {
-			sketchStrokes.push(new Stroke(points, type, [r, g, b], setRadius));
-		} else if (walkthruRecordState) {
-			walkthruStrokes.push(new Stroke(points, type, [r, g, b], setRadius));
-		}
+		if (points.length > 0) {
+			if (sketchRecordState) {
+				sketchStrokes.push(new Stroke(points, type, [r, g, b], setRadius));
+			} else if (walkthruRecordState) {
+				walkthruStrokes.push(new Stroke(points, type, [r, g, b], setRadius));
+			}
 
-		strokes.push(new Stroke(points, type, [r, g, b], setRadius));
+			strokes.push(new Stroke(points, type, [r, g, b], setRadius));
+		}
+		
 		points = [];
 
 		if(steppin) {
@@ -203,31 +320,28 @@ function mouseUpEvent(e) {
 		}
 
 		isDown = false;
-		context.beginPath();
+		currentContext.beginPath();
 	}	
 }
 
 function redraw(strokes, j) {
 	var stroke = strokes[j],
 		points = stroke.points,
-		r = stroke.color[0],
-		g = stroke.color[1],
-		b = stroke.color[2],
 		i = 0;
 
 	var strokeDraw = window.setInterval(function() {
 		var point = points[i];
-		console.log(stroke.type);
-		//context.beginPath();
-		drawPoint(point.X, point.Y, point.Pressure, stroke.type, stroke.color);
+		// context.beginPath();
+		drawPoint(point.X, point.Y, point.pressure, stroke.type, stroke.color);
 		i++;
 		if (i >= points.length) {
-			context.beginPath();
+			currentContext.beginPath();
 			clearInterval(strokeDraw);
 			i = 0;
 			j++;
 			if (!steppin) {
 				if (j < strokes.length) {
+					console.log(j);
 					redraw(strokes, j);
 				}
 			} else {
@@ -244,36 +358,44 @@ function redraw(strokes, j) {
 
 function putPoint(e, X, Y) {
 	if(isDown) {
-		context.lineTo(X, Y);
-		context.stroke();
-		context.beginPath();
-		context.arc(X, Y, radius, 0, Math.PI * 2);
-		context.fill();
-		context.beginPath();
-		context.moveTo(X, Y);
+		currentContext.lineTo(X, Y);
+		currentContext.stroke();
+		currentContext.beginPath();
+		currentContext.arc(X, Y, radius, 0, Math.PI * 2);
+		currentContext.fill();
+		currentContext.beginPath();
+		currentContext.moveTo(X, Y);
 	}
 }
 
 function redrawPutPoint(X, Y) {
-	context.lineTo(X, Y);
-	context.stroke();
-	context.beginPath();
-	context.arc(X, Y, 10, 0, Math.PI * 2);
-	context.fill();
-	context.beginPath();
-	context.moveTo(X, Y);
+	context1.lineTo(X, Y);
+	context1.stroke();
+	context1.beginPath();
+	context1.arc(X, Y, radius, 0, Math.PI * 2);
+	context1.fill();
+	context1.beginPath();
+	context1.moveTo(X, Y);
 }
 
-function setSketchBackground() {
+function setSketchBackground(dataURL, context) {
+	if (context === context1) {
+		context = context1;
+	} else if (context === context2 && typeof context2 !== 'undefined') {
+		context = context2;
+	} else {
+		context = currentContext;
+	}
+
 	var imageObj = new Image();
 	imageObj.onload = function() {
 		context.save();
-		context.globalAlpha = 0.5;
+		context.globalAlpha = 0.3;
 		context.drawImage(imageObj, 0, 0);
 		context.restore();
 	}
 
-	imageObj.src = sketchDataURL;
+	imageObj.src = dataURL;
 }
 
 function recordSketch(e) {
@@ -288,11 +410,17 @@ function recordSketch(e) {
 	} else {
 		sketchDataURL = canvas.toDataURL();
 		reset();
-		setSketchBackground();
+		setSketchBackground(sketchDataURL, currentContext);
 		
 		e.target.innerHTML = 'Record Sketch';
 		sketchRecordState = false;
 	}
+}
+
+function userSetSketch(e) {
+	userSketchDataURL = currentCanvas.toDataURL();
+	reset();
+	setSketchBackground(userSketchDataURL, currentContext);
 }
 
 function recordWalkthru(e) {
@@ -300,13 +428,20 @@ function recordWalkthru(e) {
 
 	if (buttonText === 'Record Walkthru') {
 		reset();
-		setSketchBackground();
+		setSketchBackground(sketchDataURL, currentContext);
 		walkthruDataURL = '';
 		strokes = [];
 		e.target.innerHTML = 'Save Walkthru';
 		walkthruRecordState = true;
 	} else {
 		walkthruDataURL = canvas.toDataURL();
+
+		drawing = new Drawing(sketchStrokes, sketchDataURL, walkthruStrokes, walkthruDataURL, canvas.width, canvas.height);
+		document.getElementById('drawing_input').value = JSON.stringify(drawing.saveObject());
+		var event = new Event('input', { bubbles: true });
+		document.getElementById('drawing_input').dispatchEvent(event);
+
+		// $('#drawing_input').val(JSON.stringify(drawing.saveObject())).trigger('change');
 
 		e.target.innerHTML = 'Record Walkthru';
 		walkthruRecordState = false;
@@ -315,10 +450,10 @@ function recordWalkthru(e) {
 
 function quickDrawStrokes() {
 	for(var i = 0; i < strokes.length; i++) {
-		context.beginPath();
+		currentContext.beginPath();
 		for(var j = 0; j < strokes[i].points.length; j++) {
 			var point = strokes[i].points[j];
-			drawPoint(point.X, point.Y, point.Pressure, strokes[i].type, strokes[i].color);
+			drawPoint(point.X, point.Y, point.pressure, strokes[i].type, strokes[i].color);
 		}
 	}
 }
@@ -326,6 +461,12 @@ function quickDrawStrokes() {
 function redo(e) {
 	var firstRedoStroke = redoStrokes.pop();
 	strokes.push(firstRedoStroke);
+
+	if (sketchRecordState) {
+		sketchStrokes.push(firstRedoStroke);
+	} else if (walkthruRecordState) {
+		walkthruStrokes.push(firstRedoStroke);
+	}
 
 	reset();
 
@@ -336,30 +477,51 @@ function undo(e) {
 	var lastStroke = strokes.pop();
 	redoStrokes.push(lastStroke);
 	console.log(strokes);
+	if (sketchRecordState) {
+		sketchStrokes.splice(-1, 1);
+	} else if (walkthruRecordState) {
+		walkthruStrokes.splice(-1, 1);
+	}
 
 	reset();
 
 	quickDrawStrokes();
 }
 
-function reset() {
+function reset(context) {
+
+	if (context === context1) {
+		context = context1;
+	} else if (context === context2 && typeof context2 !== 'undefined') {
+		context = context2;
+	} else {
+		context = currentContext;
+	}
+
+	console.log(context);
+
 	context.clearRect(0, 0, canvas.width, canvas.height);
 	points = [];
 }
 
-function setContextStyle(r, g, b, pressure, type) {
-	console.log('working');
+function setContextStyle(r, g, b, pressure, type, context) {
+	if (context === context1) {
+		context = context1;
+	} else if (context === context2) {
+		context = context2;
+	} else {
+		context = currentContext;
+	}
+
 	radius = setRadius * pressure;
 	context.lineWidth = radius * 2;
 	context.fillStyle = "rgba(" + r + ", " + g + ", " + b + ", " + pressure + ")";
 	context.strokeStyle = "rgba(" + r + ", " + g + ", " + b + ", " + pressure + ")";
 
 	if (type === 'pencil') {
-		console.log('pencil');
-		pencil(r, g, b, pressure);
+		pencil(r, g, b, pressure, context);
 	} else {
-		console.log('err');
-		erase();
+		erase(context);
 	}
 }
 
@@ -368,11 +530,28 @@ function setXY(e) {
 	y = e.clientY;
 }
 
-function stepByStep(e) {
-	reset();
-	steppin = true;
-	
-	redraw(walkthruStrokes, stepCounter);
-}
-
 init();
+
+if (doubleCanvasSupport) {
+	var checkForId = window.location.pathname.match('^/drawing/[a-zA-Z0-9]*/?$');
+	console.log('reg', checkForId);
+
+	var regReturn = checkForId[0].split('/');
+	var token = localStorage.getItem('token');
+
+	var ajax = new XMLHttpRequest();
+	ajax.onload = function(response) {
+		var responseParse = JSON.parse(response.target.response);
+		var drawing = JSON.parse(responseParse[0].drawing);
+
+		sketchStrokes = drawing.sketchStrokes;
+		walkthruStrokes = drawing.walkthruStrokes;
+		sketchDataURL = drawing.sketchImg;
+		walkthruDataURL = drawing.walkthruImg;
+
+		console.log(walkthruStrokes.length);
+	};
+	ajax.open('GET', `/api/drawing/${ regReturn[2] }`);
+	ajax.setRequestHeader('Authorization', `bearer ${ token }`);
+	ajax.send();
+}

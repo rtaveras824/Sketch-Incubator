@@ -40,15 +40,13 @@ passport.use('local-signup', localSignupStrategy);
 
 const authRoutes = require('./routes/auth');
 const apiRoutes = require('./routes/api');
-const applicationRoutes = require('./routes/application');
+//const applicationRoutes = require('./routes/application');
 const authCheckMiddleware = require('./middleware/auth-check');
 
 app.use('/api', authCheckMiddleware);
 
 app.use('/auth', authRoutes);
 app.use('/api', apiRoutes);
-
-app.get('/application', applicationRoutes);
 
 app.get('*', function(req, res) {
 	res.sendFile(path.resolve(__dirname, 'server/static', 'index.html'));

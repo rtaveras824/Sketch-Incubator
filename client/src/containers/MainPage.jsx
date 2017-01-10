@@ -31,6 +31,7 @@ class MainPage extends React.Component {
 			.then(function(response) {
 				console.log('returning');
 				console.log(response);
+
 				this.setState({
 					drawings: response.data
 				});
@@ -47,7 +48,7 @@ class MainPage extends React.Component {
 						author_id={ drawing.author._id }
 						author={ drawing.author.display_name }
 						title={ drawing.title }
-						drawing={ drawing.drawing }
+						drawing={ JSON.parse(drawing.drawing) }
 						category={ drawing.category }
 					 />
 			);

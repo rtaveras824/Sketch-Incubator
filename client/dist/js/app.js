@@ -26420,6 +26420,10 @@
 
 	var _Drawing2 = _interopRequireDefault(_Drawing);
 
+	var _ApplicationWalkthruPage = __webpack_require__(276);
+
+	var _ApplicationWalkthruPage2 = _interopRequireDefault(_ApplicationWalkthruPage);
+
 	var _Profile = __webpack_require__(271);
 
 	var _Profile2 = _interopRequireDefault(_Profile);
@@ -26468,7 +26472,7 @@
 			component: _Category2.default
 		}, {
 			path: '/drawing/:drawing_id',
-			component: _Drawing2.default
+			component: _ApplicationWalkthruPage2.default
 		}, {
 			path: '/profile/:user_id',
 			component: _Profile2.default
@@ -26585,6 +26589,7 @@
 				_axios2.default.get('/api/drawings', config).then(function (response) {
 					console.log('returning');
 					console.log(response);
+
 					this.setState({
 						drawings: response.data
 					});
@@ -26600,7 +26605,7 @@
 						author_id: drawing.author._id,
 						author: drawing.author.display_name,
 						title: drawing.title,
-						drawing: drawing.drawing,
+						drawing: JSON.parse(drawing.drawing),
 						category: drawing.category
 					});
 				});
@@ -28206,11 +28211,7 @@
 					author
 				)
 			),
-			_react2.default.createElement(
-				'p',
-				null,
-				drawing
-			),
+			_react2.default.createElement('img', { src: drawing.walkthruImg }),
 			category.ancestors && category.ancestors.reverse().map(function (x, i) {
 				return _react2.default.createElement(
 					_reactRouter.Link,
@@ -28618,7 +28619,7 @@
 /* 268 */
 /***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
+	'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
 		value: true
@@ -28629,6 +28630,16 @@
 	var _react = __webpack_require__(1);
 
 	var _react2 = _interopRequireDefault(_react);
+
+	var _axios = __webpack_require__(236);
+
+	var _axios2 = _interopRequireDefault(_axios);
+
+	var _reactRouter = __webpack_require__(178);
+
+	var _Auth = __webpack_require__(261);
+
+	var _Auth2 = _interopRequireDefault(_Auth);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -28644,64 +28655,158 @@
 		function ApplicationPage(props) {
 			_classCallCheck(this, ApplicationPage);
 
-			return _possibleConstructorReturn(this, (ApplicationPage.__proto__ || Object.getPrototypeOf(ApplicationPage)).call(this, props));
+			var _this = _possibleConstructorReturn(this, (ApplicationPage.__proto__ || Object.getPrototypeOf(ApplicationPage)).call(this, props));
+
+			_this.state = {
+				submission: {
+					title: '',
+					drawing: '',
+					category: '',
+					categories: [{
+						_id: '123914',
+						name: 'uggg'
+					}]
+				}
+			};
+
+			_this.sendDrawingData = _this.sendDrawingData.bind(_this);
+			_this.onChange = _this.onChange.bind(_this);
+			_this.setHeader = _this.setHeader.bind(_this);
+			return _this;
 		}
 
 		_createClass(ApplicationPage, [{
-			key: "render",
+			key: 'componentWillMount',
+			value: function componentWillMount() {
+				_axios2.default.get('/api/categories').then(function (response) {
+					var field = 'categories';
+					var submission = this.state.submission;
+					submission[field] = response.data;
+
+					field = 'category';
+					submission[field] = response.data[0]._id;
+
+					this.setState({
+						submission: submission
+					});
+				}.bind(this)).catch(function (err) {
+					console.log(err);
+				});
+			}
+		}, {
+			key: 'setHeader',
+			value: function setHeader() {
+				var config = {};
+				if (_Auth2.default.isUserAuthenticated()) {
+					console.log('Authenticated');
+					var token = _Auth2.default.getToken();
+					config.headers = {
+						"Authorization": 'bearer ' + token
+					};
+				}
+
+				return config;
+			}
+		}, {
+			key: 'sendDrawingData',
+			value: function sendDrawingData(event) {
+				event.preventDefault();
+
+				var title = this.state.submission.title;
+				var drawing = this.state.submission.drawing;
+				var category = this.state.submission.category;
+
+				_axios2.default.post('/api/upload', {
+					title: title,
+					drawing: drawing,
+					category: category
+				}, this.setHeader()).then(function (response) {
+					console.log(response);
+					_reactRouter.browserHistory.push('/profile/' + response.data.author);
+				});
+			}
+		}, {
+			key: 'onChange',
+			value: function onChange(event) {
+				var field = event.target.name;
+				var submission = this.state.submission;
+
+				submission[field] = event.target.value;
+
+				this.setState({
+					submission: submission
+				});
+			}
+		}, {
+			key: 'render',
 			value: function render() {
 				return _react2.default.createElement(
-					"div",
+					'div',
 					null,
-					_react2.default.createElement("canvas", { id: "canvas" }),
 					_react2.default.createElement(
-						"button",
-						{ id: "erase" },
-						"Erase"
+						'canvas',
+						{ id: 'canvas' },
+						'Canvas is not supported'
 					),
 					_react2.default.createElement(
-						"button",
-						{ id: "pencil" },
-						"Pencil"
+						'button',
+						{ id: 'pencil' },
+						'Pencil'
 					),
 					_react2.default.createElement(
-						"button",
-						{ id: "undo_btn" },
-						"Undo"
+						'button',
+						{ id: 'erase' },
+						'Erase'
 					),
 					_react2.default.createElement(
-						"button",
-						{ id: "redo_btn" },
-						"Redo"
+						'button',
+						{ id: 'undo_btn' },
+						'Undo'
 					),
 					_react2.default.createElement(
-						"button",
-						{ id: "record_sketch" },
-						"Record Sketch"
+						'button',
+						{ id: 'redo_btn' },
+						'Redo'
 					),
 					_react2.default.createElement(
-						"button",
-						{ id: "record_walkthru" },
-						"Record Walkthru"
+						'button',
+						{ id: 'record_sketch' },
+						'Record Sketch'
 					),
 					_react2.default.createElement(
-						"button",
-						{ id: "replay_btn" },
-						"Replay"
+						'button',
+						{ id: 'record_walkthru' },
+						'Record Walkthru'
 					),
 					_react2.default.createElement(
-						"button",
-						{ id: "step_btn" },
-						"Step By Step"
+						'button',
+						{ id: 'play_walkthru' },
+						'Walkthru Play'
 					),
 					_react2.default.createElement(
-						"form",
-						{ action: "/", onSubmit: this.onSubmit },
-						_react2.default.createElement("input", { type: "text", name: "title" }),
-						_react2.default.createElement("input", { id: "drawing_input", type: "hidden", name: "drawing" }),
-						_react2.default.createElement("input", { type: "submit", value: "Submit" })
+						'button',
+						{ id: 'step_walkthru' },
+						'Walkthru Step By Step'
 					),
-					_react2.default.createElement("img", { id: "canvas_img" })
+					_react2.default.createElement(
+						'form',
+						{ action: '/', onSubmit: this.sendDrawingData },
+						_react2.default.createElement('input', { type: 'text', name: 'title', onChange: this.onChange }),
+						_react2.default.createElement(
+							'select',
+							{ name: 'category', onChange: this.onChange },
+							this.state.submission.categories.map(function (category, index) {
+								return _react2.default.createElement(
+									'option',
+									{ value: category._id },
+									category.name
+								);
+							})
+						),
+						_react2.default.createElement('input', { id: 'drawing_input', type: 'text', style: { display: 'none' }, name: 'drawing', onChange: this.onChange }),
+						_react2.default.createElement('input', { type: 'submit', value: 'Submit' })
+					),
+					_react2.default.createElement('img', { id: 'canvas_img' })
 				);
 			}
 		}]);
@@ -29362,6 +29467,202 @@
 	};
 
 	exports.default = NotFound;
+
+/***/ },
+/* 274 */,
+/* 275 */,
+/* 276 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _axios = __webpack_require__(236);
+
+	var _axios2 = _interopRequireDefault(_axios);
+
+	var _Auth = __webpack_require__(261);
+
+	var _Auth2 = _interopRequireDefault(_Auth);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var ApplicationWalkthruPage = function (_React$Component) {
+		_inherits(ApplicationWalkthruPage, _React$Component);
+
+		function ApplicationWalkthruPage(props) {
+			_classCallCheck(this, ApplicationWalkthruPage);
+
+			var _this = _possibleConstructorReturn(this, (ApplicationWalkthruPage.__proto__ || Object.getPrototypeOf(ApplicationWalkthruPage)).call(this, props));
+
+			_this.state = {
+				drawing: [],
+				like: false,
+				favorite: false
+			};
+
+			_this.toggleLikeButton = _this.toggleLikeButton.bind(_this);
+			_this.toggleFavoriteButton = _this.toggleFavoriteButton.bind(_this);
+			_this.setHeader = _this.setHeader.bind(_this);
+			return _this;
+		}
+
+		_createClass(ApplicationWalkthruPage, [{
+			key: 'setHeader',
+			value: function setHeader() {
+				var config = {};
+				if (_Auth2.default.isUserAuthenticated()) {
+					console.log('Authenticated');
+					var token = _Auth2.default.getToken();
+					config.headers = {
+						"Authorization": 'bearer ' + token
+					};
+				}
+
+				return config;
+			}
+		}, {
+			key: 'componentWillMount',
+			value: function componentWillMount() {
+
+				_axios2.default.get('/api/drawing/' + this.props.params.drawing_id, this.setHeader()).then(function (response) {
+					console.log(response);
+					if (response.data.length > 1 && response.data[1] !== null) {
+						console.log(response.data[1]);
+						this.setState({
+							like: response.data[1].like,
+							favorite: response.data[1].favorite
+						});
+					}
+
+					this.setState({
+						drawing: response.data[0]
+					});
+				}.bind(this));
+			}
+		}, {
+			key: 'toggleLikeButton',
+			value: function toggleLikeButton() {
+				var like = !this.state.like;
+
+				_axios2.default.post('/api/drawing/userlike', {
+					drawing_id: this.props.params.drawing_id,
+					like: like
+				}, this.setHeader()).then(function (response) {
+					console.log(response);
+					this.setState({
+						like: response.data.like
+					});
+				}.bind(this)).catch(function (err) {
+					console.log(err);
+				});
+			}
+		}, {
+			key: 'toggleFavoriteButton',
+			value: function toggleFavoriteButton() {
+				var favorite = !this.state.favorite;
+
+				_axios2.default.post('/api/drawing/userfavorite', {
+					drawing_id: this.props.params.drawing_id,
+					favorite: favorite
+				}, this.setHeader()).then(function (response) {
+					console.log(response);
+					this.setState({
+						favorite: response.data.favorite
+					});
+				}.bind(this)).catch(function (err) {
+					console.log(err);
+				});
+			}
+		}, {
+			key: 'render',
+			value: function render() {
+				return _react2.default.createElement(
+					'div',
+					null,
+					_Auth2.default.isUserAuthenticated() && _react2.default.createElement(
+						'button',
+						{ onClick: this.toggleLikeButton },
+						this.state.like ? 'Unlike' : 'Like'
+					),
+					_Auth2.default.isUserAuthenticated() && _react2.default.createElement(
+						'button',
+						{ onClick: this.toggleFavoriteButton },
+						this.state.favorite ? 'Unfavorite' : 'Favorite'
+					),
+					_react2.default.createElement(
+						'canvas',
+						{ id: 'canvas' },
+						'Canvas is not supported'
+					),
+					_react2.default.createElement(
+						'canvas',
+						{ id: 'canvas2' },
+						'Canvas is not supported'
+					),
+					_react2.default.createElement(
+						'button',
+						{ id: 'pencil' },
+						'Pencil'
+					),
+					_react2.default.createElement(
+						'button',
+						{ id: 'erase' },
+						'Erase'
+					),
+					_react2.default.createElement(
+						'button',
+						{ id: 'undo_btn' },
+						'Undo'
+					),
+					_react2.default.createElement(
+						'button',
+						{ id: 'redo_btn' },
+						'Redo'
+					),
+					_react2.default.createElement(
+						'button',
+						{ id: 'play_sketch' },
+						'Play Sketch'
+					),
+					_react2.default.createElement(
+						'button',
+						{ id: 'play_walkthru' },
+						'Play Walkthru'
+					),
+					_react2.default.createElement(
+						'button',
+						{ id: 'step_walkthru' },
+						'Walkthru Step By Step'
+					),
+					_react2.default.createElement(
+						'button',
+						{ id: 'user_set_sketch' },
+						'User Set Sketch'
+					)
+				);
+			}
+		}]);
+
+		return ApplicationWalkthruPage;
+	}(_react2.default.Component);
+
+	exports.default = ApplicationWalkthruPage;
 
 /***/ }
 /******/ ]);

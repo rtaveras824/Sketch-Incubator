@@ -1,16 +1,14 @@
 const express = require('express');
 const router = new express.Router;
 
-router.get('/draw', function(req, res, next) {
-	
-});
+const mongoose = require('mongoose');
+const ObjectId = mongoose.Types.ObjectId;
+const User = mongoose.model('User');
+const Drawing = mongoose.model('Drawing');
+const Category = mongoose.model('Category');
+const UserDrawing = mongoose.model('UserDrawing');
+const UserFollow = mongoose.model('UserFollow');
 
-router.get('/:drawing_id', function(req, res, next) {
-	
-});
 
-router.post('/upload', function(req, res, next) {
-	
-});
 
 module.exports = router;

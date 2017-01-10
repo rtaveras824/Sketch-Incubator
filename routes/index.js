@@ -5,6 +5,7 @@ import SignUpPage from '../client/src/containers/SignUpPage.jsx';
 import ApplicationPage from '../client/src/containers/ApplicationPage.jsx';
 import Category from '../client/src/components/Category.jsx';
 import Drawing from '../client/src/components/Drawing.jsx';
+import ApplicationWalkthruPage from '../client/src/containers/ApplicationWalkthruPage.jsx';
 import Profile from '../client/src/components/Profile.jsx';
 import Update from '../client/src/components/Update.jsx';
 import NotFound from '../client/src/components/NotFound.jsx';
@@ -47,7 +48,7 @@ const routes = {
 		},
 		{
 			path: '/drawing/:drawing_id',
-			component: Drawing
+			component: ApplicationWalkthruPage
 		},
 		{
 			path: '/profile/:user_id',
