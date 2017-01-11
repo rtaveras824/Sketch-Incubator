@@ -29190,6 +29190,10 @@
 
 	var _Auth2 = _interopRequireDefault(_Auth);
 
+	var _Body = __webpack_require__(262);
+
+	var _Body2 = _interopRequireDefault(_Body);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -29207,7 +29211,7 @@
 			var _this = _possibleConstructorReturn(this, (Category.__proto__ || Object.getPrototypeOf(Category)).call(this, props));
 
 			_this.state = {
-				drawings: [{ 'title': 'Reuben' }]
+				drawings: []
 			};
 			return _this;
 		}
@@ -29225,6 +29229,7 @@
 				}
 
 				_axios2.default.get('/api/category/' + this.props.params.category_id, config).then(function (response) {
+					console.log('drawings', response.data);
 					this.setState({
 						drawings: response.data
 					});
@@ -29232,20 +29237,30 @@
 			}
 		}, {
 			key: 'showDrawings',
-			value: function showDrawings() {}
+			value: function showDrawings() {
+				return this.state.drawings.map(function (drawing, index) {
+					return _react2.default.createElement(_Body2.default, {
+						key: index,
+						drawing_id: drawing._id,
+						author_id: drawing.author._id,
+						author: drawing.author.display_name,
+						title: drawing.title,
+						drawing: JSON.parse(drawing.drawing),
+						category: drawing.category
+					});
+				});
+			}
 		}, {
 			key: 'render',
 			value: function render() {
 				return _react2.default.createElement(
 					'div',
-					null,
-					this.state.drawings.map(function (drawing) {
-						return _react2.default.createElement(
-							'a',
-							{ href: '/drawing/' + drawing._id },
-							drawing.title
-						);
-					})
+					{ className: 'fluid-container' },
+					_react2.default.createElement(
+						'div',
+						{ className: 'center' },
+						this.showDrawings()
+					)
 				);
 			}
 		}]);

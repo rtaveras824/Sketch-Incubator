@@ -181,9 +181,10 @@ router.get('/category/:category_id', function(req, res, next) {
 
 		return Drawing.find({
 			category: query 
-		}).exec(function(err, drawings) {
+		})
+		.populate('author category')
+		.exec(function(err, drawings) {
 			if (err) return err;
-			console.log('drawings', drawings);
 			res.send(drawings);
 		});
 	})
@@ -209,7 +210,7 @@ router.get('/category/:category_id', function(req, res, next) {
 router.get('/drawings', function(req, res, next) {
 	console.log('drawing');
 	return Drawing.find({})
-		.limit(10)
+		//.limit(10)
 		.populate('author category')
 		.exec(function(err, result) {
 			if (err) return err;
