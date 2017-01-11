@@ -47,11 +47,11 @@
 
 	'use strict';
 
-	var _colors = __webpack_require__(274);
+	var _colors = __webpack_require__(275);
 
 	var _colors2 = _interopRequireDefault(_colors);
 
-	var _pdollar = __webpack_require__(275);
+	var _pdollar = __webpack_require__(276);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -139,19 +139,30 @@
 		setContextStyle(r, g, b, pressure, type, currentContext);
 
 		/*************** DOUBLE CANVAS SUPPORT *********************/
-		if (doubleCanvasSupport) {
-			var halfWidth = window.innerWidth / 2,
-			    height = window.innerHeight;
+		var topBar = document.querySelector('.top-bar').clientHeight;
+		var bottomCommands = document.querySelector('.bottom-commands').clientHeight;
+		var height = window.innerHeight;
+		height -= topBar + bottomCommands;
 
-			canvas.width = halfWidth;
+		var halfWidth = document.body.clientWidth / 2;
+
+		if (doubleCanvasSupport) {
+
+			canvas.style.borderRight = '5px solid black';
+			canvas2.style.borderLeft = '5px solid black';
+			canvas.style.borderTop = '5px solid #777';
+			canvas2.style.borderTop = '5px solid #777';
+			var halfWidthMinusBorder = halfWidth - 5;
+
+			canvas.width = halfWidthMinusBorder;
 			canvas.height = height;
-			canvas2.width = halfWidth;
+			canvas2.width = halfWidthMinusBorder;
 			canvas2.height = height;
 
 			setContextStyle(r, g, b, pressure, type, context1);
 		} else {
-			canvas.width = window.innerWidth;
-			canvas.height = window.innerHeight;
+			canvas.width = halfWidth;
+			canvas.height = height;
 		}
 
 		leftBoundX = canvas.width / 2;
@@ -171,13 +182,13 @@
 			type = 'eraser';
 		});
 
-		undoBtn.addEventListener('click', function (e) {
-			undo(e);
-		});
+		// undoBtn.addEventListener('click', function(e) {
+		// 	undo(e);
+		// });
 
-		redoBtn.addEventListener('click', function (e) {
-			redo(e);
-		});
+		// redoBtn.addEventListener('click', function(e) {
+		// 	redo(e);
+		// });
 
 		stepWalkthruBtn.addEventListener('click', function (e) {
 			reset(context1);
@@ -292,7 +303,7 @@
 	function erase(context) {
 		if (context === context1) {
 			context = context1;
-		} else if (context === context2) {
+		} else if (context === context2 && typeof context2 !== 'undefined') {
 			context = context2;
 		} else {
 			context = currentContext;
@@ -306,7 +317,7 @@
 	function pencil(r, g, b, pressure, context) {
 		if (context === context1) {
 			context = context1;
-		} else if (context === context2) {
+		} else if (context === context2 && typeof context2 !== 'undefined') {
 			context = context2;
 		} else {
 			context = currentContext;
@@ -379,7 +390,7 @@
 			drawPoint(point.X, point.Y, point.pressure, stroke.type, stroke.color);
 			i++;
 			if (i >= points.length) {
-				currentContext.beginPath();
+				context1.beginPath();
 				clearInterval(strokeDraw);
 				i = 0;
 				j++;
@@ -551,7 +562,7 @@
 	function setContextStyle(r, g, b, pressure, type, context) {
 		if (context === context1) {
 			context = context1;
-		} else if (context === context2) {
+		} else if (context === context2 && typeof context2 !== 'undefined') {
 			context = context2;
 		} else {
 			context = currentContext;
@@ -570,8 +581,11 @@
 	}
 
 	function setXY(e) {
-		x = e.clientX;
-		y = e.clientY;
+
+		x = e.clientX - currentCanvas.offsetLeft;
+		y = e.clientY - currentCanvas.offsetTop;
+
+		console.log(e.clientY, canvas.offsetTop);
 	}
 
 	init();
@@ -602,7 +616,7 @@
 
 /***/ },
 
-/***/ 274:
+/***/ 275:
 /***/ function(module, exports) {
 
 	"use strict";
@@ -640,7 +654,7 @@
 
 /***/ },
 
-/***/ 275:
+/***/ 276:
 /***/ function(module, exports) {
 
 	"use strict";

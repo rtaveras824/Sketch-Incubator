@@ -104,41 +104,62 @@ class Profile extends React.Component {
 
 	render() {
 		return (
-			<form action="/" onSubmit={ this.processForm }>
+			<div className="container update-container">
+				<form action="/" onSubmit={ this.processForm }>
+					<div className="form-group">
+						<label>Display Name</label>
+						<input className="form-control" type="text" name="display_name" value={ this.state.display_name } onChange={ this.onChange }/>
+					</div>
 
-				<label>Display Name</label>
-				<input type="text" name="display_name" value={ this.state.display_name } onChange={ this.onChange }/>
+					<div className="form-group">
+						<label>Email</label>
+						<input className="form-control" type="text" name="email" value={ this.state.email } onChange={ this.onChange }/>
+					</div>
 
-				<label>Email</label>
-				<input type="text" name="email" value={ this.state.email } onChange={ this.onChange }/>
+					<div className="form-group">
+						<label>Address</label>
+						<input className="form-control" type="text" name="address" value={ this.state.address } onChange={ this.onChange }/>
+					</div>
 
-				<label>Address</label>
-				<input type="text" name="address" value={ this.state.address } onChange={ this.onChange }/>
+					<div className="form-group">
+						<label>Photo URL</label>
+						<input className="form-control" type="text" name="photo_url" value={ this.state.photo_url } onChange={ this.onChange }/>
+					</div>
 
-				<label>Photo URL</label>
-				<input type="text" name="photo_url" value={ this.state.photo_url } onChange={ this.onChange }/>
+					<div className="form-group">
+						<label>Portfolio</label>
+						<input className="form-control" type="text" name="portfolio_url" value={ this.state.portfolio_url } onChange={ this.onChange }/>
+					</div>
 
-				<label>Portfolio</label>
-				<input type="text" name="portfolio_url" value={ this.state.portfolio_url } onChange={ this.onChange }/>
+					<div className="form-group">
+						<label>Artstation</label>
+						<input className="form-control" type="text" name="artstation_url" value={ this.state.artstation_url } onChange={ this.onChange }/>
+					</div>
 
-				<label>Artstation</label>
-				<input type="text" name="artstation_url" value={ this.state.artstation_url } onChange={ this.onChange }/>
+					<div className="form-group">
+						<label>Behance</label>
+						<input className="form-control" type="text" name="behance_url" value={ this.state.behance_url } onChange={ this.onChange }/>
+					</div>
 
-				<label>Behance</label>
-				<input type="text" name="behance_url" value={ this.state.behance_url } onChange={ this.onChange }/>
+					<div className="form-group">
+						<label>Dribbble</label>
+						<input className="form-control" type="text" name="dribbble_url" value={ this.state.dribbble_url } onChange={ this.onChange }/>
+					</div>
 
-				<label>Dribbble</label>
-				<input type="text" name="dribbble_url" value={ this.state.dribbble_url } onChange={ this.onChange }/>
+					<div className="form-group">
+						<label>Deviant Art</label>
+						<input className="form-control" type="text" name="deviantart_url" value={ this.state.deviantart_url } onChange={ this.onChange }/>
+					</div>
 
-				<label>Deviant Art</label>
-				<input type="text" name="deviantart_url" value={ this.state.deviantart_url } onChange={ this.onChange }/>
+					<div className="form-group">
+						<label>Linkedin</label>
+						<input className="form-control" type="text" name="linkedin_url" value={ this.state.linkedin_url } onChange={ this.onChange }/>
+					</div>
 
-				<label>Linkedin</label>
-				<input type="text" name="linkedin_url" value={ this.state.linkedin_url } onChange={ this.onChange }/>
-
-				<input type="submit" value="submit" />
-				
-			</form>
+					<input type="submit" value="submit" />
+					
+				</form>
+			</div>
 		)
 	}
 }

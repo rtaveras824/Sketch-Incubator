@@ -316,10 +316,6 @@ router.post('/drawing/userfavorite', function(req, res, next) {
 	})
 });
 
-router.get('/:drawing_id', function(req, res, next) {
-
-});
-
 router.post('/upload', function(req, res, next) {
 	var newDrawing = new Drawing({
 		title: req.body.title,
@@ -332,6 +328,11 @@ router.post('/upload', function(req, res, next) {
 
 		res.send(newEntry);
 	})
+});
+
+router.get('/getuserid', function(req, res, next) {
+	console.log('user id', req.user_id);
+	res.send(req.user_id);
 });
 
 module.exports = router;

@@ -89,32 +89,41 @@ class ApplicationPage extends React.Component {
 
 	render() {
 		return (
-			<div>
-				<canvas id="canvas">Canvas is not supported</canvas>
-				<button id="pencil">Pencil</button>
-				<button id="erase">Erase</button>
-				<button id="undo_btn">Undo</button>
-				<button id="redo_btn">Redo</button>
-				<button id="record_sketch">Record Sketch</button>
-				<button id="record_walkthru">Record Walkthru</button>
-				<button id="play_walkthru">Walkthru Play</button>
-				<button id="step_walkthru">Walkthru Step By Step</button>
+			<div className="application-container fluid-container">
+				<div className="text-center">
+					<canvas id="canvas">Canvas is not supported</canvas>
+				</div>
 
-				<form action="/" onSubmit={ this.sendDrawingData }>
-					<input type="text" name="title" onChange= { this.onChange }/>
-				
-					<select name="category" onChange={ this.onChange }>
-						{
-							this.state.submission.categories.map(function(category, index) {
-								return <option value={ category._id }>{ category.name }</option>
-							})
-						}
-					</select>
+				<div className="row bottom-commands text-center">
+					<button id="pencil" className="btn btn-default">Pencil</button>
+					<button id="erase" className="btn btn-default">Erase</button>
 
-					<input id="drawing_input" type="text" style={{ display: 'none' }} name="drawing" onChange={ this.onChange } />
-					<input type="submit" value="Submit" />
-				</form>
-				<img id="canvas_img" />
+					<button id="record_sketch" className="btn btn-default">Record Sketch</button>
+					<button id="record_walkthru" className="btn btn-default">Record Walkthru</button>
+					<button id="play_walkthru" className="btn btn-default">Walkthru Play</button>
+					<button id="step_walkthru" className="btn btn-default">Walkthru Step By Step</button>
+
+					<form className="form-inline" action="/" onSubmit={ this.sendDrawingData }>
+						<div className="input-group">
+							<label className="input-group-addon">Title</label>
+							<input className="form-control" type="text" name="title" onChange= { this.onChange }/>
+						</div>
+						<div className="input-group">
+							<label className="input-group-addon">Category</label>
+							<select className="form-control" name="category" onChange={ this.onChange }>
+								{
+									this.state.submission.categories.map(function(category, index) {
+										return <option value={ category._id }>{ category.name }</option>
+									})
+								}
+							</select>
+						</div>
+						
+						<input id="drawing_input" type="text" style={{ display: 'none' }} name="drawing" onChange={ this.onChange } />
+						<input className="form-control" type="submit" value="Submit" />
+
+					</form>
+				</div>
 			</div>
 		)
 	}

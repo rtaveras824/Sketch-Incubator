@@ -91,20 +91,26 @@ class ApplicationWalkthruPage extends React.Component {
 
 	render() {
 		return (
-			<div>
-				{ Auth.isUserAuthenticated() && <button onClick={ this.toggleLikeButton }>{ this.state.like ? 'Unlike' : 'Like' }</button> }
-				{ Auth.isUserAuthenticated() && <button onClick={ this.toggleFavoriteButton }>{ this.state.favorite ? 'Unfavorite' : 'Favorite' }</button> }
-				<canvas id="canvas">Canvas is not supported</canvas>
-				<canvas id="canvas2">Canvas is not supported</canvas>
-				<button id="pencil">Pencil</button>
-				<button id="erase">Erase</button>
-				<button id="undo_btn">Undo</button>
-				<button id="redo_btn">Redo</button>
-				<button id="play_sketch">Play Sketch</button>
-				<button id="play_walkthru">Play Walkthru</button>
-				<button id="step_walkthru">Walkthru Step By Step</button>
-				<button id="user_set_sketch">User Set Sketch</button>
+			<div className="fluid-container">
+				
+				<canvas className="float-left" id="canvas">Canvas is not supported</canvas>
+				<canvas className="float-right" id="canvas2">Canvas is not supported</canvas>
 
+				<div className="row bottom-commands text-center">
+					<div className="col-xs-3">
+						{ Auth.isUserAuthenticated() && <button className="btn btn-default" onClick={ this.toggleLikeButton }>{ this.state.like ? 'Unlike' : 'Like' }</button> }
+						{ Auth.isUserAuthenticated() && <button className="btn btn-default" onClick={ this.toggleFavoriteButton }>{ this.state.favorite ? 'Unfavorite' : 'Favorite' }</button> }
+					</div>
+					<div className="col-xs-9">
+						<button className="btn btn-default" id="pencil">Pencil</button>
+						<button className="btn btn-default" id="erase">Erase</button>
+						
+						<button className="btn btn-default" id="play_sketch">Play Sketch</button>
+						<button className="btn btn-default" id="play_walkthru">Play Walkthru</button>
+						<button className="btn btn-default" id="step_walkthru">Walkthru Step By Step</button>
+						<button className="btn btn-default" id="user_set_sketch">User Set Sketch</button>
+					</div>
+				</div>
 			</div>
 		)
 	}

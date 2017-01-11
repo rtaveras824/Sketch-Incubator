@@ -26420,19 +26420,19 @@
 
 	var _Drawing2 = _interopRequireDefault(_Drawing);
 
-	var _ApplicationWalkthruPage = __webpack_require__(276);
+	var _ApplicationWalkthruPage = __webpack_require__(271);
 
 	var _ApplicationWalkthruPage2 = _interopRequireDefault(_ApplicationWalkthruPage);
 
-	var _Profile = __webpack_require__(271);
+	var _Profile = __webpack_require__(272);
 
 	var _Profile2 = _interopRequireDefault(_Profile);
 
-	var _Update = __webpack_require__(272);
+	var _Update = __webpack_require__(273);
 
 	var _Update2 = _interopRequireDefault(_Update);
 
-	var _NotFound = __webpack_require__(273);
+	var _NotFound = __webpack_require__(274);
 
 	var _NotFound2 = _interopRequireDefault(_NotFound);
 
@@ -26500,21 +26500,160 @@
 		value: true
 	});
 
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
 	var _react = __webpack_require__(1);
 
 	var _react2 = _interopRequireDefault(_react);
 
+	var _reactRouter = __webpack_require__(178);
+
+	var _Auth = __webpack_require__(261);
+
+	var _Auth2 = _interopRequireDefault(_Auth);
+
+	var _axios = __webpack_require__(236);
+
+	var _axios2 = _interopRequireDefault(_axios);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	var Base = function Base(_ref) {
-		var children = _ref.children;
-		return _react2.default.createElement(
-			'h1',
-			null,
-			'Base ',
-			children
-		);
-	};
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var Base = function (_React$Component) {
+		_inherits(Base, _React$Component);
+
+		function Base(props) {
+			_classCallCheck(this, Base);
+
+			var _this = _possibleConstructorReturn(this, (Base.__proto__ || Object.getPrototypeOf(Base)).call(this, props));
+
+			_this.state = {
+				user_id: ''
+			};
+
+			_this.setHeader = _this.setHeader.bind(_this);
+			return _this;
+		}
+
+		_createClass(Base, [{
+			key: 'setHeader',
+			value: function setHeader() {
+				var config = {};
+				if (_Auth2.default.isUserAuthenticated()) {
+					console.log('Authenticated');
+					var token = _Auth2.default.getToken();
+					config.headers = {
+						"Authorization": 'bearer ' + token
+					};
+				}
+
+				return config;
+			}
+		}, {
+			key: 'componentWillMount',
+			value: function componentWillMount() {
+				if (_Auth2.default.isUserAuthenticated()) {
+					_axios2.default.get('/api/getuserid', this.setHeader()).then(function (response) {
+						console.log('userid', response);
+						this.setState({
+							user_id: response.data
+						});
+					}.bind(this)).catch(function (err) {
+						console.log(err);
+					});
+				}
+			}
+		}, {
+			key: 'render',
+			value: function render() {
+				return _react2.default.createElement(
+					'div',
+					{ className: 'fluid-container' },
+					_react2.default.createElement(
+						'nav',
+						{ className: 'top-bar navbar navbar-default' },
+						_react2.default.createElement(
+							'div',
+							{ className: 'container-fluid' },
+							_react2.default.createElement(
+								'div',
+								{ className: 'navbar-header' },
+								_react2.default.createElement(
+									'a',
+									{ className: 'navbar-brand', href: '/' },
+									'Sketch Incubator'
+								)
+							),
+							_Auth2.default.isUserAuthenticated() ? _react2.default.createElement(
+								'ul',
+								{ className: 'nav navbar-nav navbar-right' },
+								_react2.default.createElement(
+									'li',
+									null,
+									_react2.default.createElement(
+										'a',
+										{ href: '/application/draw' },
+										'Create Walkthru'
+									)
+								),
+								_react2.default.createElement(
+									'li',
+									null,
+									_react2.default.createElement(
+										_reactRouter.Link,
+										{ to: '/profile/' + this.state.user_id },
+										'Profile'
+									)
+								),
+								_react2.default.createElement(
+									'li',
+									null,
+									_react2.default.createElement(
+										_reactRouter.Link,
+										{ to: '/logout' },
+										'Logout'
+									)
+								)
+							) : _react2.default.createElement(
+								'ul',
+								{ className: 'nav navbar-nav navbar-right' },
+								_react2.default.createElement(
+									'li',
+									null,
+									_react2.default.createElement(
+										_reactRouter.Link,
+										{ to: '/login' },
+										'Log In'
+									)
+								),
+								_react2.default.createElement(
+									'li',
+									null,
+									_react2.default.createElement(
+										_reactRouter.Link,
+										{ to: '/signup' },
+										'Sign Up'
+									)
+								)
+							)
+						)
+					),
+					_react2.default.createElement(
+						'div',
+						{ className: 'fluid-container' },
+						this.props.children
+					)
+				);
+			}
+		}]);
+
+		return Base;
+	}(_react2.default.Component);
 
 	exports.default = Base;
 
@@ -26617,7 +26756,11 @@
 					'div',
 					null,
 					_react2.default.createElement(_Menu2.default, null),
-					this.showDrawings()
+					_react2.default.createElement(
+						'div',
+						{ className: 'container float-left' },
+						this.showDrawings()
+					)
 				);
 			}
 		}]);
@@ -28192,44 +28335,53 @@
 		    category = _ref.category;
 		return _react2.default.createElement(
 			'div',
-			null,
+			{ className: 'drawing-container clearfix' },
+			_react2.default.createElement('img', { className: 'img-responsive float-left', width: '300px', src: drawing.walkthruImg }),
 			_react2.default.createElement(
-				_reactRouter.Link,
-				{ to: '/drawing/' + drawing_id },
+				'div',
+				{ className: 'right-half float-left' },
 				_react2.default.createElement(
-					'h1',
-					null,
-					title
-				)
-			),
-			_react2.default.createElement(
-				_reactRouter.Link,
-				{ to: '/profile/' + author_id },
-				_react2.default.createElement(
-					'h3',
-					null,
-					author
-				)
-			),
-			_react2.default.createElement('img', { src: drawing.walkthruImg }),
-			category.ancestors && category.ancestors.reverse().map(function (x, i) {
-				return _react2.default.createElement(
-					_reactRouter.Link,
-					{ key: i, to: '/category/' + x._id },
+					'a',
+					{ href: '/drawing/' + drawing_id },
 					_react2.default.createElement(
-						'button',
+						'h1',
 						null,
-						x.name
+						title
 					)
-				);
-			}),
-			_react2.default.createElement(
-				_reactRouter.Link,
-				{ to: 'category/' + category._id },
+				),
 				_react2.default.createElement(
-					'button',
+					'h2',
 					null,
-					category.name
+					'By: ',
+					_react2.default.createElement(
+						_reactRouter.Link,
+						{ to: '/profile/' + author_id },
+						author
+					)
+				),
+				_react2.default.createElement(
+					'ul',
+					{ className: 'breadcrumb' },
+					category.ancestors && category.ancestors.reverse().map(function (x, i) {
+						return _react2.default.createElement(
+							'li',
+							null,
+							_react2.default.createElement(
+								_reactRouter.Link,
+								{ key: i, to: '/category/' + x._id },
+								x.name
+							)
+						);
+					}),
+					_react2.default.createElement(
+						'li',
+						null,
+						_react2.default.createElement(
+							_reactRouter.Link,
+							{ to: 'category/' + category._id },
+							category.name
+						)
+					)
 				)
 			)
 		);
@@ -28265,47 +28417,142 @@
 
 	var Menu = function Menu() {
 		return _react2.default.createElement(
-			'ul',
-			null,
+			'div',
+			{ className: 'menu-container float-left' },
 			_react2.default.createElement(
-				'li',
-				null,
+				'ul',
+				{ className: 'top nav nav-pills nav-stacked' },
 				_react2.default.createElement(
-					_reactRouter.Link,
-					{ to: '/category/5863f68da5a1ac0ecc852111' },
-					'People'
-				),
-				_react2.default.createElement(
-					'ul',
+					'li',
 					null,
 					_react2.default.createElement(
-						'li',
-						null,
+						_reactRouter.Link,
+						{ to: '/category/5863f68da5a1ac0ecc852111' },
+						'People'
+					),
+					_react2.default.createElement(
+						'ul',
+						{ className: 'sub1 nav nav-pills nav-stacked' },
 						_react2.default.createElement(
-							_reactRouter.Link,
-							{ to: '/category/5863f68da5a1ac0ecc852112' },
-							'Anatomy'
-						),
-						_react2.default.createElement(
-							'ul',
+							'li',
 							null,
 							_react2.default.createElement(
-								'li',
-								null,
-								_react2.default.createElement(
-									_reactRouter.Link,
-									{ to: '/category/5863f68da5a1ac0ecc852113' },
-									'Face'
-								)
+								_reactRouter.Link,
+								{ to: '/category/5863f68da5a1ac0ecc852112' },
+								'Classical'
 							),
 							_react2.default.createElement(
-								'li',
-								null,
+								'ul',
+								{ className: 'sub2 nav nav-pills nav-stacked' },
 								_react2.default.createElement(
-									_reactRouter.Link,
-									{ to: '/category/5863f68da5a1ac0ecc852114' },
-									'Torso'
+									'li',
+									null,
+									_react2.default.createElement(
+										_reactRouter.Link,
+										{ to: '/category/5863f68da5a1ac0ecc852113' },
+										'Face'
+									)
+								),
+								_react2.default.createElement(
+									'li',
+									null,
+									_react2.default.createElement(
+										_reactRouter.Link,
+										{ to: '/category/5863f68da5a1ac0ecc852114' },
+										'Figure'
+									)
 								)
+							)
+						)
+					)
+				)
+			),
+			_react2.default.createElement(
+				'ul',
+				{ className: 'top nav nav-pills nav-stacked' },
+				_react2.default.createElement(
+					'li',
+					null,
+					_react2.default.createElement(
+						_reactRouter.Link,
+						{ to: '/category/587481cd31645f0854cf53d8' },
+						'Environment'
+					),
+					_react2.default.createElement(
+						'ul',
+						{ className: 'sub1 nav nav-pills nav-stacked' },
+						_react2.default.createElement(
+							'li',
+							null,
+							_react2.default.createElement(
+								_reactRouter.Link,
+								{ to: '/category/587481cd31645f0854cf53d9' },
+								'Landscape'
+							),
+							_react2.default.createElement(
+								'ul',
+								{ className: 'sub2 nav nav-pills nav-stacked' },
+								_react2.default.createElement(
+									'li',
+									null,
+									_react2.default.createElement(
+										_reactRouter.Link,
+										{ to: '/category/587481cd31645f0854cf5310' },
+										'Flower'
+									)
+								)
+							)
+						)
+					)
+				)
+			),
+			_react2.default.createElement(
+				'ul',
+				{ className: 'top nav nav-pills nav-stacked' },
+				_react2.default.createElement(
+					'li',
+					null,
+					_react2.default.createElement(
+						_reactRouter.Link,
+						{ to: '/category/587593fd0f768613848214b4' },
+						'Mechanical'
+					),
+					_react2.default.createElement(
+						'ul',
+						{ className: 'sub1 nav nav-pills nav-stacked' },
+						_react2.default.createElement(
+							'li',
+							null,
+							_react2.default.createElement(
+								_reactRouter.Link,
+								{ to: '/category/587593fd0f768613848214b5' },
+								'Vehicle'
+							)
+						)
+					)
+				)
+			),
+			_react2.default.createElement(
+				'ul',
+				{ className: 'top nav nav-pills nav-stacked' },
+				_react2.default.createElement(
+					'li',
+					null,
+					_react2.default.createElement(
+						_reactRouter.Link,
+						{ to: '/category/5874864d5f51f13320655432' },
+						'Design'
+					),
+					_react2.default.createElement(
+						'ul',
+						{ className: 'sub1 nav nav-pills nav-stacked' },
+						_react2.default.createElement(
+							'li',
+							null,
+							_react2.default.createElement(
+								_reactRouter.Link,
+								{ to: '/category/5874864d5f51f13320655433' },
+								'Swirls'
 							)
 						)
 					)
@@ -28742,71 +28989,86 @@
 			value: function render() {
 				return _react2.default.createElement(
 					'div',
-					null,
+					{ className: 'application-container fluid-container' },
 					_react2.default.createElement(
-						'canvas',
-						{ id: 'canvas' },
-						'Canvas is not supported'
-					),
-					_react2.default.createElement(
-						'button',
-						{ id: 'pencil' },
-						'Pencil'
-					),
-					_react2.default.createElement(
-						'button',
-						{ id: 'erase' },
-						'Erase'
-					),
-					_react2.default.createElement(
-						'button',
-						{ id: 'undo_btn' },
-						'Undo'
-					),
-					_react2.default.createElement(
-						'button',
-						{ id: 'redo_btn' },
-						'Redo'
-					),
-					_react2.default.createElement(
-						'button',
-						{ id: 'record_sketch' },
-						'Record Sketch'
-					),
-					_react2.default.createElement(
-						'button',
-						{ id: 'record_walkthru' },
-						'Record Walkthru'
-					),
-					_react2.default.createElement(
-						'button',
-						{ id: 'play_walkthru' },
-						'Walkthru Play'
-					),
-					_react2.default.createElement(
-						'button',
-						{ id: 'step_walkthru' },
-						'Walkthru Step By Step'
-					),
-					_react2.default.createElement(
-						'form',
-						{ action: '/', onSubmit: this.sendDrawingData },
-						_react2.default.createElement('input', { type: 'text', name: 'title', onChange: this.onChange }),
+						'div',
+						{ className: 'text-center' },
 						_react2.default.createElement(
-							'select',
-							{ name: 'category', onChange: this.onChange },
-							this.state.submission.categories.map(function (category, index) {
-								return _react2.default.createElement(
-									'option',
-									{ value: category._id },
-									category.name
-								);
-							})
-						),
-						_react2.default.createElement('input', { id: 'drawing_input', type: 'text', style: { display: 'none' }, name: 'drawing', onChange: this.onChange }),
-						_react2.default.createElement('input', { type: 'submit', value: 'Submit' })
+							'canvas',
+							{ id: 'canvas' },
+							'Canvas is not supported'
+						)
 					),
-					_react2.default.createElement('img', { id: 'canvas_img' })
+					_react2.default.createElement(
+						'div',
+						{ className: 'row bottom-commands text-center' },
+						_react2.default.createElement(
+							'button',
+							{ id: 'pencil', className: 'btn btn-default' },
+							'Pencil'
+						),
+						_react2.default.createElement(
+							'button',
+							{ id: 'erase', className: 'btn btn-default' },
+							'Erase'
+						),
+						_react2.default.createElement(
+							'button',
+							{ id: 'record_sketch', className: 'btn btn-default' },
+							'Record Sketch'
+						),
+						_react2.default.createElement(
+							'button',
+							{ id: 'record_walkthru', className: 'btn btn-default' },
+							'Record Walkthru'
+						),
+						_react2.default.createElement(
+							'button',
+							{ id: 'play_walkthru', className: 'btn btn-default' },
+							'Walkthru Play'
+						),
+						_react2.default.createElement(
+							'button',
+							{ id: 'step_walkthru', className: 'btn btn-default' },
+							'Walkthru Step By Step'
+						),
+						_react2.default.createElement(
+							'form',
+							{ className: 'form-inline', action: '/', onSubmit: this.sendDrawingData },
+							_react2.default.createElement(
+								'div',
+								{ className: 'input-group' },
+								_react2.default.createElement(
+									'label',
+									{ className: 'input-group-addon' },
+									'Title'
+								),
+								_react2.default.createElement('input', { className: 'form-control', type: 'text', name: 'title', onChange: this.onChange })
+							),
+							_react2.default.createElement(
+								'div',
+								{ className: 'input-group' },
+								_react2.default.createElement(
+									'label',
+									{ className: 'input-group-addon' },
+									'Category'
+								),
+								_react2.default.createElement(
+									'select',
+									{ className: 'form-control', name: 'category', onChange: this.onChange },
+									this.state.submission.categories.map(function (category, index) {
+										return _react2.default.createElement(
+											'option',
+											{ value: category._id },
+											category.name
+										);
+									})
+								)
+							),
+							_react2.default.createElement('input', { id: 'drawing_input', type: 'text', style: { display: 'none' }, name: 'drawing', onChange: this.onChange }),
+							_react2.default.createElement('input', { className: 'form-control', type: 'submit', value: 'Submit' })
+						)
+					)
 				);
 			}
 		}]);
@@ -28893,8 +29155,8 @@
 					null,
 					this.state.drawings.map(function (drawing) {
 						return _react2.default.createElement(
-							_reactRouter.Link,
-							{ to: '/drawing/' + drawing._id },
+							'a',
+							{ href: '/drawing/' + drawing._id },
 							drawing.title
 						);
 					})
@@ -29053,6 +29315,202 @@
 
 /***/ },
 /* 271 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _axios = __webpack_require__(236);
+
+	var _axios2 = _interopRequireDefault(_axios);
+
+	var _Auth = __webpack_require__(261);
+
+	var _Auth2 = _interopRequireDefault(_Auth);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var ApplicationWalkthruPage = function (_React$Component) {
+		_inherits(ApplicationWalkthruPage, _React$Component);
+
+		function ApplicationWalkthruPage(props) {
+			_classCallCheck(this, ApplicationWalkthruPage);
+
+			var _this = _possibleConstructorReturn(this, (ApplicationWalkthruPage.__proto__ || Object.getPrototypeOf(ApplicationWalkthruPage)).call(this, props));
+
+			_this.state = {
+				drawing: [],
+				like: false,
+				favorite: false
+			};
+
+			_this.toggleLikeButton = _this.toggleLikeButton.bind(_this);
+			_this.toggleFavoriteButton = _this.toggleFavoriteButton.bind(_this);
+			_this.setHeader = _this.setHeader.bind(_this);
+			return _this;
+		}
+
+		_createClass(ApplicationWalkthruPage, [{
+			key: 'setHeader',
+			value: function setHeader() {
+				var config = {};
+				if (_Auth2.default.isUserAuthenticated()) {
+					console.log('Authenticated');
+					var token = _Auth2.default.getToken();
+					config.headers = {
+						"Authorization": 'bearer ' + token
+					};
+				}
+
+				return config;
+			}
+		}, {
+			key: 'componentWillMount',
+			value: function componentWillMount() {
+
+				_axios2.default.get('/api/drawing/' + this.props.params.drawing_id, this.setHeader()).then(function (response) {
+					console.log(response);
+					if (response.data.length > 1 && response.data[1] !== null) {
+						console.log(response.data[1]);
+						this.setState({
+							like: response.data[1].like,
+							favorite: response.data[1].favorite
+						});
+					}
+
+					this.setState({
+						drawing: response.data[0]
+					});
+				}.bind(this));
+			}
+		}, {
+			key: 'toggleLikeButton',
+			value: function toggleLikeButton() {
+				var like = !this.state.like;
+
+				_axios2.default.post('/api/drawing/userlike', {
+					drawing_id: this.props.params.drawing_id,
+					like: like
+				}, this.setHeader()).then(function (response) {
+					console.log(response);
+					this.setState({
+						like: response.data.like
+					});
+				}.bind(this)).catch(function (err) {
+					console.log(err);
+				});
+			}
+		}, {
+			key: 'toggleFavoriteButton',
+			value: function toggleFavoriteButton() {
+				var favorite = !this.state.favorite;
+
+				_axios2.default.post('/api/drawing/userfavorite', {
+					drawing_id: this.props.params.drawing_id,
+					favorite: favorite
+				}, this.setHeader()).then(function (response) {
+					console.log(response);
+					this.setState({
+						favorite: response.data.favorite
+					});
+				}.bind(this)).catch(function (err) {
+					console.log(err);
+				});
+			}
+		}, {
+			key: 'render',
+			value: function render() {
+				return _react2.default.createElement(
+					'div',
+					{ className: 'fluid-container' },
+					_react2.default.createElement(
+						'canvas',
+						{ className: 'float-left', id: 'canvas' },
+						'Canvas is not supported'
+					),
+					_react2.default.createElement(
+						'canvas',
+						{ className: 'float-right', id: 'canvas2' },
+						'Canvas is not supported'
+					),
+					_react2.default.createElement(
+						'div',
+						{ className: 'row bottom-commands text-center' },
+						_react2.default.createElement(
+							'div',
+							{ className: 'col-xs-3' },
+							_Auth2.default.isUserAuthenticated() && _react2.default.createElement(
+								'button',
+								{ className: 'btn btn-default', onClick: this.toggleLikeButton },
+								this.state.like ? 'Unlike' : 'Like'
+							),
+							_Auth2.default.isUserAuthenticated() && _react2.default.createElement(
+								'button',
+								{ className: 'btn btn-default', onClick: this.toggleFavoriteButton },
+								this.state.favorite ? 'Unfavorite' : 'Favorite'
+							)
+						),
+						_react2.default.createElement(
+							'div',
+							{ className: 'col-xs-9' },
+							_react2.default.createElement(
+								'button',
+								{ className: 'btn btn-default', id: 'pencil' },
+								'Pencil'
+							),
+							_react2.default.createElement(
+								'button',
+								{ className: 'btn btn-default', id: 'erase' },
+								'Erase'
+							),
+							_react2.default.createElement(
+								'button',
+								{ className: 'btn btn-default', id: 'play_sketch' },
+								'Play Sketch'
+							),
+							_react2.default.createElement(
+								'button',
+								{ className: 'btn btn-default', id: 'play_walkthru' },
+								'Play Walkthru'
+							),
+							_react2.default.createElement(
+								'button',
+								{ className: 'btn btn-default', id: 'step_walkthru' },
+								'Walkthru Step By Step'
+							),
+							_react2.default.createElement(
+								'button',
+								{ className: 'btn btn-default', id: 'user_set_sketch' },
+								'User Set Sketch'
+							)
+						)
+					)
+				);
+			}
+		}]);
+
+		return ApplicationWalkthruPage;
+	}(_react2.default.Component);
+
+	exports.default = ApplicationWalkthruPage;
+
+/***/ },
+/* 272 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -29234,7 +29692,7 @@
 	exports.default = Profile;
 
 /***/ },
-/* 272 */
+/* 273 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -29370,69 +29828,113 @@
 			key: 'render',
 			value: function render() {
 				return _react2.default.createElement(
-					'form',
-					{ action: '/', onSubmit: this.processForm },
+					'div',
+					{ className: 'container update-container' },
 					_react2.default.createElement(
-						'label',
-						null,
-						'Display Name'
-					),
-					_react2.default.createElement('input', { type: 'text', name: 'display_name', value: this.state.display_name, onChange: this.onChange }),
-					_react2.default.createElement(
-						'label',
-						null,
-						'Email'
-					),
-					_react2.default.createElement('input', { type: 'text', name: 'email', value: this.state.email, onChange: this.onChange }),
-					_react2.default.createElement(
-						'label',
-						null,
-						'Address'
-					),
-					_react2.default.createElement('input', { type: 'text', name: 'address', value: this.state.address, onChange: this.onChange }),
-					_react2.default.createElement(
-						'label',
-						null,
-						'Photo URL'
-					),
-					_react2.default.createElement('input', { type: 'text', name: 'photo_url', value: this.state.photo_url, onChange: this.onChange }),
-					_react2.default.createElement(
-						'label',
-						null,
-						'Portfolio'
-					),
-					_react2.default.createElement('input', { type: 'text', name: 'portfolio_url', value: this.state.portfolio_url, onChange: this.onChange }),
-					_react2.default.createElement(
-						'label',
-						null,
-						'Artstation'
-					),
-					_react2.default.createElement('input', { type: 'text', name: 'artstation_url', value: this.state.artstation_url, onChange: this.onChange }),
-					_react2.default.createElement(
-						'label',
-						null,
-						'Behance'
-					),
-					_react2.default.createElement('input', { type: 'text', name: 'behance_url', value: this.state.behance_url, onChange: this.onChange }),
-					_react2.default.createElement(
-						'label',
-						null,
-						'Dribbble'
-					),
-					_react2.default.createElement('input', { type: 'text', name: 'dribbble_url', value: this.state.dribbble_url, onChange: this.onChange }),
-					_react2.default.createElement(
-						'label',
-						null,
-						'Deviant Art'
-					),
-					_react2.default.createElement('input', { type: 'text', name: 'deviantart_url', value: this.state.deviantart_url, onChange: this.onChange }),
-					_react2.default.createElement(
-						'label',
-						null,
-						'Linkedin'
-					),
-					_react2.default.createElement('input', { type: 'text', name: 'linkedin_url', value: this.state.linkedin_url, onChange: this.onChange }),
-					_react2.default.createElement('input', { type: 'submit', value: 'submit' })
+						'form',
+						{ action: '/', onSubmit: this.processForm },
+						_react2.default.createElement(
+							'div',
+							{ className: 'form-group' },
+							_react2.default.createElement(
+								'label',
+								null,
+								'Display Name'
+							),
+							_react2.default.createElement('input', { className: 'form-control', type: 'text', name: 'display_name', value: this.state.display_name, onChange: this.onChange })
+						),
+						_react2.default.createElement(
+							'div',
+							{ className: 'form-group' },
+							_react2.default.createElement(
+								'label',
+								null,
+								'Email'
+							),
+							_react2.default.createElement('input', { className: 'form-control', type: 'text', name: 'email', value: this.state.email, onChange: this.onChange })
+						),
+						_react2.default.createElement(
+							'div',
+							{ className: 'form-group' },
+							_react2.default.createElement(
+								'label',
+								null,
+								'Address'
+							),
+							_react2.default.createElement('input', { className: 'form-control', type: 'text', name: 'address', value: this.state.address, onChange: this.onChange })
+						),
+						_react2.default.createElement(
+							'div',
+							{ className: 'form-group' },
+							_react2.default.createElement(
+								'label',
+								null,
+								'Photo URL'
+							),
+							_react2.default.createElement('input', { className: 'form-control', type: 'text', name: 'photo_url', value: this.state.photo_url, onChange: this.onChange })
+						),
+						_react2.default.createElement(
+							'div',
+							{ className: 'form-group' },
+							_react2.default.createElement(
+								'label',
+								null,
+								'Portfolio'
+							),
+							_react2.default.createElement('input', { className: 'form-control', type: 'text', name: 'portfolio_url', value: this.state.portfolio_url, onChange: this.onChange })
+						),
+						_react2.default.createElement(
+							'div',
+							{ className: 'form-group' },
+							_react2.default.createElement(
+								'label',
+								null,
+								'Artstation'
+							),
+							_react2.default.createElement('input', { className: 'form-control', type: 'text', name: 'artstation_url', value: this.state.artstation_url, onChange: this.onChange })
+						),
+						_react2.default.createElement(
+							'div',
+							{ className: 'form-group' },
+							_react2.default.createElement(
+								'label',
+								null,
+								'Behance'
+							),
+							_react2.default.createElement('input', { className: 'form-control', type: 'text', name: 'behance_url', value: this.state.behance_url, onChange: this.onChange })
+						),
+						_react2.default.createElement(
+							'div',
+							{ className: 'form-group' },
+							_react2.default.createElement(
+								'label',
+								null,
+								'Dribbble'
+							),
+							_react2.default.createElement('input', { className: 'form-control', type: 'text', name: 'dribbble_url', value: this.state.dribbble_url, onChange: this.onChange })
+						),
+						_react2.default.createElement(
+							'div',
+							{ className: 'form-group' },
+							_react2.default.createElement(
+								'label',
+								null,
+								'Deviant Art'
+							),
+							_react2.default.createElement('input', { className: 'form-control', type: 'text', name: 'deviantart_url', value: this.state.deviantart_url, onChange: this.onChange })
+						),
+						_react2.default.createElement(
+							'div',
+							{ className: 'form-group' },
+							_react2.default.createElement(
+								'label',
+								null,
+								'Linkedin'
+							),
+							_react2.default.createElement('input', { className: 'form-control', type: 'text', name: 'linkedin_url', value: this.state.linkedin_url, onChange: this.onChange })
+						),
+						_react2.default.createElement('input', { type: 'submit', value: 'submit' })
+					)
 				);
 			}
 		}]);
@@ -29443,7 +29945,7 @@
 	exports.default = Profile;
 
 /***/ },
-/* 273 */
+/* 274 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -29467,202 +29969,6 @@
 	};
 
 	exports.default = NotFound;
-
-/***/ },
-/* 274 */,
-/* 275 */,
-/* 276 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-		value: true
-	});
-
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-	var _react = __webpack_require__(1);
-
-	var _react2 = _interopRequireDefault(_react);
-
-	var _axios = __webpack_require__(236);
-
-	var _axios2 = _interopRequireDefault(_axios);
-
-	var _Auth = __webpack_require__(261);
-
-	var _Auth2 = _interopRequireDefault(_Auth);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-	var ApplicationWalkthruPage = function (_React$Component) {
-		_inherits(ApplicationWalkthruPage, _React$Component);
-
-		function ApplicationWalkthruPage(props) {
-			_classCallCheck(this, ApplicationWalkthruPage);
-
-			var _this = _possibleConstructorReturn(this, (ApplicationWalkthruPage.__proto__ || Object.getPrototypeOf(ApplicationWalkthruPage)).call(this, props));
-
-			_this.state = {
-				drawing: [],
-				like: false,
-				favorite: false
-			};
-
-			_this.toggleLikeButton = _this.toggleLikeButton.bind(_this);
-			_this.toggleFavoriteButton = _this.toggleFavoriteButton.bind(_this);
-			_this.setHeader = _this.setHeader.bind(_this);
-			return _this;
-		}
-
-		_createClass(ApplicationWalkthruPage, [{
-			key: 'setHeader',
-			value: function setHeader() {
-				var config = {};
-				if (_Auth2.default.isUserAuthenticated()) {
-					console.log('Authenticated');
-					var token = _Auth2.default.getToken();
-					config.headers = {
-						"Authorization": 'bearer ' + token
-					};
-				}
-
-				return config;
-			}
-		}, {
-			key: 'componentWillMount',
-			value: function componentWillMount() {
-
-				_axios2.default.get('/api/drawing/' + this.props.params.drawing_id, this.setHeader()).then(function (response) {
-					console.log(response);
-					if (response.data.length > 1 && response.data[1] !== null) {
-						console.log(response.data[1]);
-						this.setState({
-							like: response.data[1].like,
-							favorite: response.data[1].favorite
-						});
-					}
-
-					this.setState({
-						drawing: response.data[0]
-					});
-				}.bind(this));
-			}
-		}, {
-			key: 'toggleLikeButton',
-			value: function toggleLikeButton() {
-				var like = !this.state.like;
-
-				_axios2.default.post('/api/drawing/userlike', {
-					drawing_id: this.props.params.drawing_id,
-					like: like
-				}, this.setHeader()).then(function (response) {
-					console.log(response);
-					this.setState({
-						like: response.data.like
-					});
-				}.bind(this)).catch(function (err) {
-					console.log(err);
-				});
-			}
-		}, {
-			key: 'toggleFavoriteButton',
-			value: function toggleFavoriteButton() {
-				var favorite = !this.state.favorite;
-
-				_axios2.default.post('/api/drawing/userfavorite', {
-					drawing_id: this.props.params.drawing_id,
-					favorite: favorite
-				}, this.setHeader()).then(function (response) {
-					console.log(response);
-					this.setState({
-						favorite: response.data.favorite
-					});
-				}.bind(this)).catch(function (err) {
-					console.log(err);
-				});
-			}
-		}, {
-			key: 'render',
-			value: function render() {
-				return _react2.default.createElement(
-					'div',
-					null,
-					_Auth2.default.isUserAuthenticated() && _react2.default.createElement(
-						'button',
-						{ onClick: this.toggleLikeButton },
-						this.state.like ? 'Unlike' : 'Like'
-					),
-					_Auth2.default.isUserAuthenticated() && _react2.default.createElement(
-						'button',
-						{ onClick: this.toggleFavoriteButton },
-						this.state.favorite ? 'Unfavorite' : 'Favorite'
-					),
-					_react2.default.createElement(
-						'canvas',
-						{ id: 'canvas' },
-						'Canvas is not supported'
-					),
-					_react2.default.createElement(
-						'canvas',
-						{ id: 'canvas2' },
-						'Canvas is not supported'
-					),
-					_react2.default.createElement(
-						'button',
-						{ id: 'pencil' },
-						'Pencil'
-					),
-					_react2.default.createElement(
-						'button',
-						{ id: 'erase' },
-						'Erase'
-					),
-					_react2.default.createElement(
-						'button',
-						{ id: 'undo_btn' },
-						'Undo'
-					),
-					_react2.default.createElement(
-						'button',
-						{ id: 'redo_btn' },
-						'Redo'
-					),
-					_react2.default.createElement(
-						'button',
-						{ id: 'play_sketch' },
-						'Play Sketch'
-					),
-					_react2.default.createElement(
-						'button',
-						{ id: 'play_walkthru' },
-						'Play Walkthru'
-					),
-					_react2.default.createElement(
-						'button',
-						{ id: 'step_walkthru' },
-						'Walkthru Step By Step'
-					),
-					_react2.default.createElement(
-						'button',
-						{ id: 'user_set_sketch' },
-						'User Set Sketch'
-					)
-				);
-			}
-		}]);
-
-		return ApplicationWalkthruPage;
-	}(_react2.default.Component);
-
-	exports.default = ApplicationWalkthruPage;
 
 /***/ }
 /******/ ]);

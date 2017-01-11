@@ -38,7 +38,7 @@ class Category extends React.Component {
 		return (
 			<div>
 			{ this.state.drawings.map(function(drawing) {
-				return (<Link to={ `/drawing/${drawing._id}` }>{ drawing.title }</Link>)
+				return (<a href={ `/drawing/${drawing._id}` }>{ drawing.title }</a>)
 				})
 			}
 			</div>

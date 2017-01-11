@@ -59,7 +59,9 @@ class MainPage extends React.Component {
 		return (
 			<div>
 				<Menu />
-				{ this.showDrawings() }
+				<div className="container float-left">
+					{ this.showDrawings() }
+				</div>
 			</div>
 		)
 	}
