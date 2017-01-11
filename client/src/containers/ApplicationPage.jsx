@@ -104,11 +104,11 @@ class ApplicationPage extends React.Component {
 					<button id="step_walkthru" className="btn btn-default">Walkthru Step By Step</button>
 
 					<form className="form-inline" action="/" onSubmit={ this.sendDrawingData }>
-						<div className="input-group">
+						<div className="input-group bottom-command-input">
 							<label className="input-group-addon">Title</label>
 							<input className="form-control" type="text" name="title" onChange= { this.onChange }/>
 						</div>
-						<div className="input-group">
+						<div className="input-group bottom-command-input">
 							<label className="input-group-addon">Category</label>
 							<select className="form-control" name="category" onChange={ this.onChange }>
 								{
@@ -120,7 +120,7 @@ class ApplicationPage extends React.Component {
 						</div>
 						
 						<input id="drawing_input" type="text" style={{ display: 'none' }} name="drawing" onChange={ this.onChange } />
-						<input className="form-control" type="submit" value="Submit" />
+						<input className="form-control bottom-command-input" type="submit" value="Submit" />
 
 					</form>
 				</div>

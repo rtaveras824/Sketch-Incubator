@@ -28702,11 +28702,54 @@
 		    onChange = _ref.onChange,
 		    user = _ref.user;
 		return _react2.default.createElement(
-			"form",
-			{ action: "/", onSubmit: onSubmit },
-			_react2.default.createElement("input", { type: "text", name: "email", onChange: onChange }),
-			_react2.default.createElement("input", { type: "password", name: "password", onChange: onChange }),
-			_react2.default.createElement("input", { type: "submit", value: "submit" })
+			"div",
+			{ className: "fluid-container" },
+			_react2.default.createElement(
+				"div",
+				{ className: "login-container center" },
+				_react2.default.createElement(
+					"div",
+					{ className: "panel panel-default" },
+					_react2.default.createElement(
+						"div",
+						{ className: "panel-heading" },
+						_react2.default.createElement(
+							"h3",
+							{ className: "panel-title" },
+							"Log In"
+						)
+					),
+					_react2.default.createElement(
+						"div",
+						{ className: "panel-body" },
+						_react2.default.createElement(
+							"form",
+							{ action: "/", onSubmit: onSubmit },
+							_react2.default.createElement(
+								"div",
+								{ className: "form-group" },
+								_react2.default.createElement(
+									"label",
+									null,
+									"Email"
+								),
+								_react2.default.createElement("input", { className: "form-control", type: "text", name: "email", onChange: onChange })
+							),
+							_react2.default.createElement(
+								"div",
+								{ className: "form-group" },
+								_react2.default.createElement(
+									"label",
+									null,
+									"Password"
+								),
+								_react2.default.createElement("input", { className: "form-control", type: "password", name: "password", onChange: onChange })
+							),
+							_react2.default.createElement("input", { className: "form-control", type: "submit", value: "Submit" })
+						)
+					)
+				)
+			)
 		);
 	};
 
@@ -28843,19 +28886,62 @@
 		    user = _ref.user;
 		return _react2.default.createElement(
 			'div',
-			null,
+			{ className: 'fluid-container' },
 			_react2.default.createElement(
-				'form',
-				{ action: '/', onSubmit: onSubmit },
+				'div',
+				{ className: 'login-container center' },
 				_react2.default.createElement(
-					'h2',
-					null,
-					'Sign Up'
-				),
-				_react2.default.createElement('input', { type: 'text', name: 'display_name', onChange: onChange }),
-				_react2.default.createElement('input', { type: 'text', name: 'email', onChange: onChange }),
-				_react2.default.createElement('input', { type: 'password', name: 'password', onChange: onChange }),
-				_react2.default.createElement('input', { type: 'submit', value: 'submit' })
+					'div',
+					{ className: 'panel panel-default' },
+					_react2.default.createElement(
+						'div',
+						{ className: 'panel-heading' },
+						_react2.default.createElement(
+							'h3',
+							{ className: 'panel-title' },
+							'Sign Up'
+						)
+					),
+					_react2.default.createElement(
+						'div',
+						{ className: 'panel-body' },
+						_react2.default.createElement(
+							'form',
+							{ action: '/', onSubmit: onSubmit },
+							_react2.default.createElement(
+								'div',
+								{ className: 'form-group' },
+								_react2.default.createElement(
+									'label',
+									null,
+									'Username'
+								),
+								_react2.default.createElement('input', { className: 'form-control', type: 'text', name: 'display_name', onChange: onChange })
+							),
+							_react2.default.createElement(
+								'div',
+								{ className: 'form-group' },
+								_react2.default.createElement(
+									'label',
+									null,
+									'Email'
+								),
+								_react2.default.createElement('input', { className: 'form-control', type: 'text', name: 'email', onChange: onChange })
+							),
+							_react2.default.createElement(
+								'div',
+								{ className: 'form-group' },
+								_react2.default.createElement(
+									'label',
+									null,
+									'Password'
+								),
+								_react2.default.createElement('input', { className: 'form-control', type: 'password', name: 'password', onChange: onChange })
+							),
+							_react2.default.createElement('input', { className: 'form-control', type: 'submit', value: 'submit' })
+						)
+					)
+				)
 			)
 		);
 	};
@@ -29037,7 +29123,7 @@
 							{ className: 'form-inline', action: '/', onSubmit: this.sendDrawingData },
 							_react2.default.createElement(
 								'div',
-								{ className: 'input-group' },
+								{ className: 'input-group bottom-command-input' },
 								_react2.default.createElement(
 									'label',
 									{ className: 'input-group-addon' },
@@ -29047,7 +29133,7 @@
 							),
 							_react2.default.createElement(
 								'div',
-								{ className: 'input-group' },
+								{ className: 'input-group bottom-command-input' },
 								_react2.default.createElement(
 									'label',
 									{ className: 'input-group-addon' },
@@ -29066,7 +29152,7 @@
 								)
 							),
 							_react2.default.createElement('input', { id: 'drawing_input', type: 'text', style: { display: 'none' }, name: 'drawing', onChange: this.onChange }),
-							_react2.default.createElement('input', { className: 'form-control', type: 'submit', value: 'Submit' })
+							_react2.default.createElement('input', { className: 'form-control bottom-command-input', type: 'submit', value: 'Submit' })
 						)
 					)
 				);
@@ -29453,21 +29539,7 @@
 						{ className: 'row bottom-commands text-center' },
 						_react2.default.createElement(
 							'div',
-							{ className: 'col-xs-3' },
-							_Auth2.default.isUserAuthenticated() && _react2.default.createElement(
-								'button',
-								{ className: 'btn btn-default', onClick: this.toggleLikeButton },
-								this.state.like ? 'Unlike' : 'Like'
-							),
-							_Auth2.default.isUserAuthenticated() && _react2.default.createElement(
-								'button',
-								{ className: 'btn btn-default', onClick: this.toggleFavoriteButton },
-								this.state.favorite ? 'Unfavorite' : 'Favorite'
-							)
-						),
-						_react2.default.createElement(
-							'div',
-							{ className: 'col-xs-9' },
+							null,
 							_react2.default.createElement(
 								'button',
 								{ className: 'btn btn-default', id: 'pencil' },
@@ -29497,6 +29569,20 @@
 								'button',
 								{ className: 'btn btn-default', id: 'user_set_sketch' },
 								'User Set Sketch'
+							),
+							_react2.default.createElement(
+								'div',
+								null,
+								_Auth2.default.isUserAuthenticated() && _react2.default.createElement(
+									'button',
+									{ className: 'btn btn-default', onClick: this.toggleLikeButton },
+									this.state.like ? 'Unlike' : 'Like'
+								),
+								_Auth2.default.isUserAuthenticated() && _react2.default.createElement(
+									'button',
+									{ className: 'btn btn-default', onClick: this.toggleFavoriteButton },
+									this.state.favorite ? 'Unfavorite' : 'Favorite'
+								)
 							)
 						)
 					)

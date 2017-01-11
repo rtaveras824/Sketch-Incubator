@@ -97,11 +97,8 @@ class ApplicationWalkthruPage extends React.Component {
 				<canvas className="float-right" id="canvas2">Canvas is not supported</canvas>
 
 				<div className="row bottom-commands text-center">
-					<div className="col-xs-3">
-						{ Auth.isUserAuthenticated() && <button className="btn btn-default" onClick={ this.toggleLikeButton }>{ this.state.like ? 'Unlike' : 'Like' }</button> }
-						{ Auth.isUserAuthenticated() && <button className="btn btn-default" onClick={ this.toggleFavoriteButton }>{ this.state.favorite ? 'Unfavorite' : 'Favorite' }</button> }
-					</div>
-					<div className="col-xs-9">
+					
+					<div>
 						<button className="btn btn-default" id="pencil">Pencil</button>
 						<button className="btn btn-default" id="erase">Erase</button>
 						
@@ -109,6 +106,10 @@ class ApplicationWalkthruPage extends React.Component {
 						<button className="btn btn-default" id="play_walkthru">Play Walkthru</button>
 						<button className="btn btn-default" id="step_walkthru">Walkthru Step By Step</button>
 						<button className="btn btn-default" id="user_set_sketch">User Set Sketch</button>
+						<div>
+							{ Auth.isUserAuthenticated() && <button className="btn btn-default" onClick={ this.toggleLikeButton }>{ this.state.like ? 'Unlike' : 'Like' }</button> }
+							{ Auth.isUserAuthenticated() && <button className="btn btn-default" onClick={ this.toggleFavoriteButton }>{ this.state.favorite ? 'Unfavorite' : 'Favorite' }</button> }
+						</div>
 					</div>
 				</div>
 			</div>
